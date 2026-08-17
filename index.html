@@ -950,8 +950,27 @@
         document.getElementById('btnClearForm').addEventListener('click', () => {
             const confirmed = window.confirm('Clear all entered form data, dates, checkboxes, and signatures?');
             if (!confirmed) return;
+
+            // Clear the visible form immediately, then clear saved data.
+            document.querySelectorAll('.field-line.editable, .remarks-inline-line.editable, .reimb-box.editable').forEach(el => {
+                if (el.tagName === 'INPUT') el.value = '';
+                else el.innerText = '';
+            });
+            document.querySelectorAll('.date-overlay-input[id]').forEach(el => {
+                el.value = '';
+                const display = document.getElementById(el.id + '-display');
+                if (display) display.innerText = '';
+            });
+            document.querySelectorAll('.chk[id]').forEach(el => el.classList.remove('checked'));
+            document.querySelectorAll('.sig-wrap[data-sig-id]').forEach(wrap => {
+                wrap.classList.remove('has-sig');
+                const image = wrap.querySelector('.sig-img');
+                const input = wrap.querySelector('.sig-file-input');
+                if (image) { image.src = ''; image.style.display = 'none'; }
+                if (input) input.value = '';
+            });
             localStorage.removeItem(STORAGE_KEY);
-            window.location.reload();
+            fitPage();
         });
         importFileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
