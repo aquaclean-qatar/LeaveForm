@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Labour Card - Aqua Clean</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #e5e5e5;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  #pageWrapper {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    flex: 0 0 210mm;
+    background: #ffffff;
+    margin: 10mm auto;
+    padding: 10mm 10mm 10mm 10mm;
+    position: relative;
+    color: #20629F;
+    overflow: visible;
+  }
+  @media print {
+    html, body {
+      background: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      color-adjust: exact;
+    }
+    #pageWrapper { overflow: visible; height: auto; }
+    .page { margin: 0; box-shadow: none; transform: none; width: 210mm; min-height: 297mm; padding: 10mm; }
+    .toolbar, .site-footer, button { display: none !important; }
+    img { max-width: 100%; height: auto; }
+    table { page-break-inside: auto; }
+    thead { display: table-header-group; }
+    tr { page-break-inside: avoid; break-inside: avoid; }
+    @page { size: A4; margin: 0; }
+  }
+  .arabic {
+    font-family: 'Amiri', 'Noto Naskh Arabic', 'Arial', 'Tahoma', sans-serif;
+    direction: rtl;
+    unicode-bidi: embed;
+  }
+  .red { color: #E2393C; }
+
+  .editable {
+    color: #000000 !important;
+    outline: none;
+    cursor: text;
+    text-align: center;
+  }
+  .editable:hover { background: rgba(32,98,159,0.06); }
+  .editable:focus { background: rgba(32,98,159,0.12); }
+  @media print { .editable:hover, .editable:focus { background: transparent; } }
+
+  /* ---------- HEADER ---------- */
+  .header { display: flex; justify-content: space-between; align-items: center; }
+  .header .left, .header .right { font-size: 12.5px; line-height: 1.6; width: 27%; }
+  .header .left { text-align: left; white-space: nowrap; }
+  .header .right { text-align: right; direction: rtl; white-space: nowrap; }
+  .header .center { width: 46%; text-align: center; }
+  .header .center img { height: 26mm; max-width: 100%; cursor: pointer; }
+
+  /* ---------- TITLE ROW ---------- */
+  .title-row { text-align: center; margin-top: 5mm; }
+  .title-arabic { font-size: 22px; font-weight: bold; margin-bottom: 1px; }
+  .title-english { font-size: 19px; font-weight: bold; text-decoration: underline; }
+
+  /* ---------- NAME / PROFESSION / MONTH / YEAR ---------- */
+  .info-block { margin-top: 5mm; font-size: 13.5px; }
+  .info-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .info-group { display: flex; align-items: baseline; white-space: nowrap; gap: 6px; flex: 1; }
+  .info-group.right-group { justify-content: flex-end; }
+  .field-line {
+    border: none;
+    border-bottom: 1px solid #20629F;
+    display: inline-block;
+    min-width: 160px;
+    flex-shrink: 1;
+    flex-grow: 1;
+    line-height: 15px;
+    vertical-align: bottom;
+    margin: 0 4px;
+    padding: 0 2px;
+    background: transparent;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13.5px;
+    text-align: left;
+  }
+  .field-line.short { min-width: 90px; flex-grow: 0; }
+
+  /* ---------- SALARY SCALE ---------- */
+  .salary-row { display: flex; align-items: baseline; margin-top: 2px; font-size: 13px; gap: 10px; flex-wrap: nowrap; }
+  .salary-label { white-space: nowrap; font-weight: bold; }
+  .salary-item { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; flex: 1; }
+  .salary-item .field-line { min-width: 60px; }
+
+  /* ---------- DAY GRID TABLES ---------- */
+  table.day-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: 2px solid #20629F;
+    margin-top: 8px;
+    font-size: 10px;
+  }
+  table.day-table th, table.day-table td { border: 1px solid #20629F; padding: 2px; text-align: center; }
+  table.day-table th.day-col { font-weight: bold; font-size: 10.5px; width: 5.6%; }
+  table.day-table th.label-col, table.day-table td.row-label { width: 12%; font-size: 9.5px; font-weight: bold; line-height: 1.15; padding: 3px 2px; }
+  table.day-table td.row-label .ar { display: block; direction: rtl; }
+  table.day-table td.day-cell { height: 18px; }
+  table.day-table td.day-cell.editable { color: #000 !important; }
+
+  /* ---------- DETAILS / AMOUNT + SIGNATURES ---------- */
+  .bottom-section { display: flex; justify-content: space-between; margin-top: 10mm; gap: 6mm; }
+  .signatures-col { width: 42%; font-size: 13px; padding-top: 3mm; }
+  .signatures-col .sig-line { margin-bottom: 12mm; }
+  .signatures-col .sig-label-en { display: block; margin-bottom: 1px; }
+  .signatures-col .sig-label-ar { display: block; direction: rtl; text-align: right; margin-bottom: 4mm; }
+  .signatures-col .sig-underline { display: block; border-bottom: 1px solid #20629F; min-height: 8mm; }
+
+  .details-col { width: 55%; }
+  table.details-table { width: 100%; border-collapse: collapse; border: 2px solid #20629F; font-size: 12.5px; }
+  table.details-table th, table.details-table td { border: 1px solid #20629F; padding: 4px 6px; }
+  table.details-table th { font-weight: bold; text-align: center; }
+  table.details-table td.label-cell { text-align: left; }
+  table.details-table td.label-cell .ar { direction: rtl; float: right; }
+  table.details-table td.amount-cell { text-align: center; width: 35%; }
+  table.details-table tr.total-highlight td { font-weight: bold; }
+
+  /* ---------- TOOLBAR ---------- */
+  .toolbar { position: fixed; left: 14px; right: 14px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 999; }
+  .toolbar button {
+    display: flex; align-items: center; gap: 5px;
+    font-family: Arial, sans-serif; font-size: 12px;
+    padding: 7px 12px; border-radius: 20px;
+    border: 1px solid #20629F; background: #ffffff; color: #20629F;
+    cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .toolbar button:hover { background: #20629F; color: #fff; }
+  @media (max-width: 600px) { .toolbar button { font-size: 11px; padding: 6px 10px; } }
+
+  /* ---------- SITE FOOTER ---------- */
+  .site-footer {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #888;
+    padding: 18px 0 70px 0;
+  }
+  .site-footer a { color: #20629F; text-decoration: none; font-weight: bold; }
+  .site-footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="notranslate" translate="no">
+
+<div id="pageWrapper">
+<div class="page" id="sheetPage">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="left editable" id="f-header-left" contenteditable="true" style="color: #20629F !important; text-align:left;">
+      Telefax : 44363994<br>
+      P.O. Box : 32177<br>
+      Doha - Qatar
+    </div>
+    <div class="center">
+      <img id="logoImg" src="https://i.imgur.com/y2wOlu7.png" crossorigin="anonymous" alt="Aqua Clean Facility Services Co. - click to refresh">
+    </div>
+    <div class="right arabic editable" id="f-header-right" contenteditable="true" style="color: #20629F !important;">
+      تليفاكس: 44363994<br>
+      ص.ب: 32177<br>
+      الدوحة - قطر
+    </div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title-row">
+    <div class="title-arabic editable" id="f-title-ar" contenteditable="true" style="color: #20629F !important;">بطاقة عامل</div>
+    <div class="title-english editable" id="f-title-en" contenteditable="true" style="color: #20629F !important;">LABOUR CARD</div>
+  </div>
+
+  <!-- NAME / PROFESSION -->
+  <div class="info-block">
+    <div class="info-row">
+      <div class="info-group">
+        <span class="editable" id="f-name-label-en" contenteditable="true" style="color:#20629F !important;">Name :</span>
+        <span class="field-line editable" id="f-name" contenteditable="true"></span>
+        <span class="arabic editable" id="f-name-label-ar" contenteditable="true" style="color:#20629F !important;">الأسم:</span>
+      </div>
+      <div class="info-group right-group">
+        <span class="editable" id="f-prof-label-en" contenteditable="true" style="color:#20629F !important;">Profession :</span>
+        <span class="field-line editable" id="f-profession" contenteditable="true"></span>
+        <span class="arabic editable" id="f-prof-label-ar" contenteditable="true" style="color:#20629F !important;">المهنة :</span>
+      </div>
+    </div>
+    <div class="info-row">
+      <div class="info-group">
+        <span class="editable" id="f-month-label-en" contenteditable="true" style="color:#20629F !important;">Month :</span>
+        <span class="field-line editable" id="f-month" contenteditable="true"></span>
+        <span class="arabic editable" id="f-month-label-ar" contenteditable="true" style="color:#20629F !important;">شهر:</span>
+      </div>
+      <div class="info-group right-group">
+        <span class="editable" id="f-year-label-en" contenteditable="true" style="color:#20629F !important;">Year :</span>
+        <span class="field-line short editable" id="f-year" contenteditable="true"></span>
+        <span class="arabic editable" id="f-year-label-ar" contenteditable="true" style="color:#20629F !important;">سنة :</span>
+      </div>
+    </div>
+
+    <!-- SALARY SCALE -->
+    <div class="salary-row">
+      <span class="salary-label editable" id="f-scale-label-en" contenteditable="true" style="color:#20629F !important;">Salary<br>Scale</span>
+      <span class="salary-item">
+        <span class="editable" id="f-permonth-en" contenteditable="true" style="color:#20629F !important;">Per Month :</span>
+        <span class="field-line editable" id="f-permonth-val" contenteditable="true"></span>
+        <span class="arabic editable" id="f-permonth-ar" contenteditable="true" style="color:#20629F !important;">في شهر :</span>
+      </span>
+      <span class="salary-item">
+        <span class="editable" id="f-perday-en" contenteditable="true" style="color:#20629F !important;">Per Day :</span>
+        <span class="field-line editable" id="f-perday-val" contenteditable="true"></span>
+        <span class="arabic editable" id="f-perday-ar" contenteditable="true" style="color:#20629F !important;">يومية :</span>
+      </span>
+      <span class="salary-item">
+        <span class="editable" id="f-perhour-en" contenteditable="true" style="color:#20629F !important;">Per Hour :</span>
+        <span class="field-line editable" id="f-perhour-val" contenteditable="true"></span>
+        <span class="arabic editable" id="f-perhour-ar" contenteditable="true" style="color:#20629F !important;">في ساعة :</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- DAY GRID 1 (days 1-16) -->
+  <table class="day-table" id="dayTable1"></table>
+
+  <!-- DAY GRID 2 (days 17-31) -->
+  <table class="day-table" id="dayTable2" style="margin-top:4px;"></table>
+
+  <!-- DETAILS / AMOUNT + SIGNATURES -->
+  <div class="bottom-section">
+    <div class="signatures-col">
+      <div class="sig-line">
+        <span class="sig-label-en editable" id="f-manager-en" contenteditable="true" style="color:#20629F !important;">Manager</span>
+        <span class="sig-label-ar arabic editable" id="f-manager-ar" contenteditable="true" style="color:#20629F !important;">مدير</span>
+        <span class="sig-underline editable" id="f-manager-sig" contenteditable="true"></span>
+      </div>
+      <div class="sig-line">
+        <span class="sig-label-en editable" id="f-receiver-en" contenteditable="true" style="color:#20629F !important;">Receiver's Signature</span>
+        <span class="sig-label-ar arabic editable" id="f-receiver-ar" contenteditable="true" style="color:#20629F !important;">توقيع المستلم</span>
+        <span class="sig-underline editable" id="f-receiver-sig" contenteditable="true"></span>
+      </div>
+    </div>
+
+    <div class="details-col">
+      <table class="details-table">
+        <tr>
+          <th><span class="editable" id="f-details-en" contenteditable="true" style="color:#20629F !important;">Details</span></th>
+          <th><span class="arabic editable" id="f-details-ar" contenteditable="true" style="color:#20629F !important;">التفاصيل</span></th>
+          <th><span class="editable" id="f-amount-en" contenteditable="true" style="color:#20629F !important;">Amount</span> <span class="arabic editable" id="f-amount-ar" contenteditable="true" style="color:#20629F !important;">المبالغ</span></th>
+        </tr>
+        <tr>
+          <td colspan="2" class="label-cell"><span class="editable" id="f-basic-en" contenteditable="true" style="color:#20629F !important;">Basic Salary</span><span class="arabic editable" id="f-basic-ar" contenteditable="true" style="color:#20629F !important;">الراتب الأساسي</span></td>
+          <td class="amount-cell editable" id="f-basic-amt" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="label-cell"><span class="editable" id="f-ot-en" contenteditable="true" style="color:#20629F !important;">Add. Overtime</span><span class="arabic editable" id="f-ot-ar" contenteditable="true" style="color:#20629F !important;">الساعات الإضافية</span></td>
+          <td class="amount-cell editable" id="f-ot-amt" contenteditable="true"></td>
+        </tr>
+        <tr class="total-highlight">
+          <td colspan="2" class="label-cell"><span class="editable" id="f-total-en" contenteditable="true" style="color:#20629F !important;">Total</span><span class="arabic editable" id="f-total-ar" contenteditable="true" style="color:#20629F !important;">المجموع</span></td>
+          <td class="amount-cell editable" id="f-total-amt" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="label-cell"><span class="editable" id="f-advance-en" contenteditable="true" style="color:#20629F !important;">Less Advance Received</span><span class="arabic editable" id="f-advance-ar" contenteditable="true" style="color:#20629F !important;">سلفيات</span></td>
+          <td class="amount-cell editable" id="f-advance-amt" contenteditable="true"></td>
+        </tr>
+        <tr class="total-highlight">
+          <td colspan="2" class="label-cell"><span class="editable" id="f-balance-en" contenteditable="true" style="color:#20629F !important;">Balance</span><span class="arabic editable" id="f-balance-ar" contenteditable="true" style="color:#20629F !important;">الباقي</span></td>
+          <td class="amount-cell editable" id="f-balance-amt" contenteditable="true"></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- Site footer -->
+<div class="site-footer">
+  Developed by <a href="https://olkite.com" target="_blank" rel="noopener">Hassan</a>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button id="btnPrint" title="Send to your printer">🖨️ Print</button>
+  <button id="btnSavePDF" title="Download this sheet as a PDF file">📄 Save as PDF</button>
+</div>
+
+<script>
+  const STORAGE_KEY = 'aquaclean_labour_card_v1';
+
+  const ROWS = [
+    { key: 'morning', en: 'Morning', ar: 'صباحاً' },
+    { key: 'afternoon', en: 'Afternoon', ar: 'ظهراً' },
+    { key: 'overtime', en: 'Overtime', ar: 'الساعات الإضافية' }
+  ];
+
+  function buildDayTable(tableId, startDay, endDay) {
+    const table = document.getElementById(tableId);
+    table.innerHTML = '';
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const labelTh = document.createElement('th');
+    labelTh.className = 'label-col';
+    labelTh.textContent = '';
+    headRow.appendChild(labelTh);
+    for (let d = startDay; d <= endDay; d++) {
+      const th = document.createElement('th');
+      th.className = 'day-col';
+      th.textContent = d;
+      headRow.appendChild(th);
+    }
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    ROWS.forEach(row => {
+      const tr = document.createElement('tr');
+      const labelTd = document.createElement('td');
+      labelTd.className = 'row-label';
+      labelTd.innerHTML = `${row.en}<span class="ar">${row.ar}</span>`;
+      tr.appendChild(labelTd);
+      for (let d = startDay; d <= endDay; d++) {
+        const td = document.createElement('td');
+        td.className = 'day-cell editable';
+        td.id = `f-day${d}-${row.key}`;
+        td.contentEditable = 'true';
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+  }
+
+  function loadData() {
+    let data = {};
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) data = JSON.parse(raw);
+    } catch (e) { console.error('load error', e); }
+
+    document.querySelectorAll('.editable[id]').forEach(el => {
+      if (data[el.id] === undefined) return;
+      if (el.id.includes('header')) {
+        el.innerHTML = data[el.id];
+      } else {
+        el.innerText = data[el.id];
+      }
+    });
+  }
+
+  function saveField(el) {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const data = raw ? JSON.parse(raw) : {};
+      if (el.id.includes('header')) {
+        data[el.id] = el.innerHTML;
+      } else {
+        data[el.id] = el.innerText;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.error('save error', e);
+    }
+  }
+
+  function wireEditableFields() {
+    document.querySelectorAll('.editable[id]').forEach(el => {
+      el.addEventListener('input', () => saveField(el));
+      el.addEventListener('blur', () => saveField(el));
+    });
+  }
+
+  function recalcTotals() {
+    const basic = parseFloat(document.getElementById('f-basic-amt').innerText) || 0;
+    const ot = parseFloat(document.getElementById('f-ot-amt').innerText) || 0;
+    const advance = parseFloat(document.getElementById('f-advance-amt').innerText) || 0;
+
+    const total = Math.round((basic + ot) * 100) / 100;
+    const balance = Math.round((total - advance) * 100) / 100;
+
+    const totalEl = document.getElementById('f-total-amt');
+    const balanceEl = document.getElementById('f-balance-amt');
+
+    if (document.activeElement !== totalEl) {
+      totalEl.innerText = total ? String(total) : '';
+      saveField(totalEl);
+    }
+    if (document.activeElement !== balanceEl) {
+      balanceEl.innerText = balance ? String(balance) : '';
+      saveField(balanceEl);
+    }
+  }
+
+  function wireTotalCalculation() {
+    ['f-basic-amt', 'f-ot-amt', 'f-advance-amt'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', recalcTotals);
+    });
+  }
+
+  let isOutputMode = false;
+
+  function fitPage() {
+    if (isOutputMode) return;
+    const page = document.getElementById('sheetPage');
+    const wrapper = document.getElementById('pageWrapper');
+    page.style.transform = 'none';
+    const naturalWidth = page.offsetWidth;
+    const naturalHeight = page.offsetHeight;
+    const available = wrapper.clientWidth - 12;
+    let scale = 1;
+    if (available < naturalWidth) scale = available / naturalWidth;
+    if (scale < 1) {
+      page.style.transform = `scale(${scale})`;
+      page.style.transformOrigin = 'top center';
+      wrapper.style.height = (naturalHeight * scale + 20) + 'px';
+    } else {
+      page.style.transform = 'none';
+      wrapper.style.height = 'auto';
+    }
+  }
+
+  let resizeTimer = null;
+  function scheduleFitPage() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(fitPage, 100);
+  }
+
+  function resetForOutput() {
+    isOutputMode = true;
+    const page = document.getElementById('sheetPage');
+    const wrapper = document.getElementById('pageWrapper');
+
+    window.scrollTo(0, 0);
+
+    page.style.transform = 'none';
+    page.style.margin = '0';
+    page.style.boxShadow = 'none';
+
+    wrapper.style.height = 'auto';
+    wrapper.style.overflow = 'visible';
+    wrapper.style.display = 'block';
+
+    document.querySelectorAll('.toolbar, .site-footer').forEach(el => {
+      el.style.display = 'none';
+    });
+  }
+
+  function restoreAfterOutput() {
+    isOutputMode = false;
+    const page = document.getElementById('sheetPage');
+    const wrapper = document.getElementById('pageWrapper');
+
+    page.style.margin = '10mm auto';
+    page.style.boxShadow = '';
+    wrapper.style.display = 'flex';
+
+    document.querySelectorAll('.toolbar, .site-footer').forEach(el => {
+      el.style.display = '';
+    });
+    fitPage();
+  }
+
+  window.addEventListener('beforeprint', resetForOutput);
+  window.addEventListener('afterprint', restoreAfterOutput);
+
+  async function printDocument() {
+    try {
+      await document.fonts.ready;
+      const logo = document.getElementById('logoImg');
+      if (logo && !logo.complete) {
+        await new Promise(r => { logo.onload = r; logo.onerror = r; });
+      }
+    } catch (e) { /* ignore */ }
+
+    const prevTitle = document.title;
+    document.title = 'AquaClean_Labour_Card';
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 1000);
+  }
+
+  document.getElementById('btnPrint').addEventListener('click', printDocument);
+
+  document.getElementById('btnSavePDF').addEventListener('click', async () => {
+    const btn = document.getElementById('btnSavePDF');
+    const prevLabel = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Generating…';
+    try {
+      try {
+        await document.fonts.ready;
+        const logo = document.getElementById('logoImg');
+        if (logo && !logo.complete) {
+          await new Promise(r => { logo.onload = r; logo.onerror = r; });
+        }
+      } catch (e) { /* ignore */ }
+
+      resetForOutput();
+
+      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      const page = document.getElementById('sheetPage');
+      const canvas = await html2canvas(page, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: page.scrollWidth,
+        height: page.scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: page.scrollWidth,
+        windowHeight: page.scrollHeight,
+        onclone: (clonedDoc) => {
+          const style = clonedDoc.createElement('style');
+          style.innerHTML = `
+            table.day-table, table.details-table { border: 2px solid #20629F !important; }
+            .editable, .arabic, span, div, td, th { font-weight: 400 !important; }
+            .title-arabic, .title-english, th, .row-label { font-weight: 700 !important; }
+          `;
+          clonedDoc.head.appendChild(style);
+        }
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const { jsPDF } = window.jspdf;
+
+      const pdfWidthMm = 210;
+      const pdfHeightMm = 297;
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidthMm, pdfHeightMm);
+      pdf.save('AquaClean_Labour_Card.pdf');
+    } catch (err) {
+      console.error('PDF generation error', err);
+      alert('Sorry, something went wrong generating the PDF. Please try the Print button instead.');
+    } finally {
+      restoreAfterOutput();
+      btn.disabled = false;
+      btn.innerHTML = prevLabel;
+    }
+  });
+
+  document.getElementById('logoImg').addEventListener('click', () => {
+    window.location.reload();
+  });
+
+  window.addEventListener('resize', scheduleFitPage);
+  window.addEventListener('orientationchange', () => setTimeout(fitPage, 200));
+  window.addEventListener('load', fitPage);
+  document.addEventListener('DOMContentLoaded', () => {
+    buildDayTable('dayTable1', 1, 16);
+    buildDayTable('dayTable2', 17, 31);
+    loadData();
+    wireEditableFields();
+    wireTotalCalculation();
+    recalcTotals();
+    fitPage();
+  });
+</script>
+
+</body>
+</html>
