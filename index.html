@@ -1,593 +1,1383 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" translate="no">
 <head>
-<meta charset="UTF-8">
-<meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Labour Card - Aqua Clean</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: #e5e5e5;
-    font-family: 'Times New Roman', Times, serif;
-  }
-  #pageWrapper {
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-  }
-  .page {
-    width: 210mm;
-    min-height: 297mm;
-    flex: 0 0 210mm;
-    background: #ffffff;
-    margin: 10mm auto;
-    padding: 10mm 10mm 10mm 10mm;
-    position: relative;
-    color: #20629F;
-    overflow: visible;
-  }
-  @media print {
-    html, body {
-      background: #fff;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-      color-adjust: exact;
-    }
-    #pageWrapper { overflow: visible; height: auto; }
-    .page { margin: 0; box-shadow: none; transform: none; width: 210mm; min-height: 297mm; padding: 10mm; }
-    .toolbar, .site-footer, button { display: none !important; }
-    img { max-width: 100%; height: auto; }
-    table { page-break-inside: auto; }
-    thead { display: table-header-group; }
-    tr { page-break-inside: avoid; break-inside: avoid; }
-    @page { size: A4; margin: 0; }
-  }
-  .arabic {
-    font-family: 'Amiri', 'Noto Naskh Arabic', 'Arial', 'Tahoma', sans-serif;
-    direction: rtl;
-    unicode-bidi: embed;
-  }
-  .red { color: #E2393C; }
+    <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aqua Clean Leave Application Form - Fill, Print & Save as PDF</title>
+    <meta name="description" content="Fill out the Aqua Clean Building Services Company LLC Leave Application Form online, then print it or save it as a PDF. Free, editable, and works on any device.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+    <style>
+        /* === GLOBAL RESET & PRINT === */
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; background: #e5e5e5; font-family: 'Cambria', Georgia, 'Times New Roman', serif; }
+        #pageWrapper { width: 100%; overflow-x: auto; overflow-y: visible; display: flex; justify-content: center; }
+        .page { width: 210mm; min-height: 297mm; flex: 0 0 210mm; background: #ffffff; margin: 10mm auto; padding: 8mm 6mm; position: relative; color: #20629F; overflow: visible; }
 
-  .editable {
-    color: #000000 !important;
-    outline: none;
-    cursor: text;
-    text-align: center;
-  }
-  .editable:hover { background: rgba(32,98,159,0.06); }
-  .editable:focus { background: rgba(32,98,159,0.12); }
-  @media print { .editable:hover, .editable:focus { background: transparent; } }
+        /* ========== PRINT OVERRIDES (FIXED TO PRESERVE HEADER) ========== */
+        @media print {
+            html, body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #pageWrapper { overflow: visible; height: auto; }
+            .page { margin: 0; box-shadow: none; width: 210mm; min-height: 297mm; padding: 5mm; zoom: 1 !important; break-inside: avoid; }
+            .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input { display: none !important; }
+            img { max-width: 100%; height: auto; }
+            .sig-wrap { border-bottom: 1.5px solid #000000 !important; height: 36px !important; min-width: 120px !important; }
+            .sig-img { max-height: 32px !important; }
+            .form-box { padding: 4mm !important; }
+            
+            /* HEADER EXACT MATCH FOR PRINT */
+            .title-english { font-family: 'Arial', 'Helvetica', sans-serif !important; font-size: 16px !important; font-weight: 700 !important; color: #00A4E4 !important; letter-spacing: 0.5px !important; }
+            .title-sub { font-family: 'Arial', 'Helvetica', sans-serif !important; font-size: 13px !important; font-weight: 700 !important; color: #00A4E4 !important; display: inline-block !important; border-bottom: 2px solid #00A4E4 !important; padding-bottom: 1px !important; margin-top: 4px !important; }
+            .title-divider { margin: 2mm -4mm 3mm -4mm !important; }
 
-  /* ---------- HEADER ---------- */
-  .header { display: flex; justify-content: space-between; align-items: center; }
-  .header .left, .header .right { font-size: 12.5px; line-height: 1.6; width: 27%; }
-  .header .left { text-align: left; white-space: nowrap; }
-  .header .right { text-align: right; direction: rtl; white-space: nowrap; }
-  .header .center { width: 46%; text-align: center; }
-  .header .center img { height: 26mm; max-width: 100%; cursor: pointer; }
+            .field-row { font-size: 10px !important; margin-bottom: 4px !important; }
+            .field-item { margin-right: 4px !important; }
+            .chk-item { margin-right: 6px !important; }
+            .chk { width: 14px !important; height: 14px !important; border-width: 1.5px !important; }
+            .field-line { font-size: 10px !important; min-width: 90px !important; }
+            .date-wrap { font-size: 10px !important; min-width: 80px !important; }
+            .subsection-title { font-size: 10.5px !important; margin: 2mm 0 1.5mm 0 !important; }
+            .note-text { font-size: 9px !important; margin: 2px 0 !important; }
+            .remarks-line { font-size: 10px !important; min-height: 16px !important; }
+            .reimb-box { font-size: 10px !important; min-width: 80px !important; }
+            
+            /* UNPAID BOLD FIX FOR PRINT */
+            #f-lbl-unpaid-bold { font-weight: bold !important; }
+            @page { size: A4; margin: 0; }
+        }
 
-  /* ---------- TITLE ROW ---------- */
-  .title-row { text-align: center; margin-top: 5mm; }
-  .title-arabic { font-size: 22px; font-weight: bold; margin-bottom: 1px; }
-  .title-english { font-size: 19px; font-weight: bold; text-decoration: underline; }
+        /* === EDITABLE FIELDS === */
+        .editable { color: #000000 !important; font-weight: 400; outline: none; cursor: text; text-align: left; }
+        .editable:hover { background: rgba(32, 98, 159, 0.06); }
+        .editable:focus { background: rgba(32, 98, 159, 0.12); }
+        @media print { .editable:hover, .editable:focus { background: transparent; } }
 
-  /* ---------- NAME / PROFESSION / MONTH / YEAR ---------- */
-  .info-block { margin-top: 5mm; font-size: 13.5px; }
-  .info-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  .info-group { display: flex; align-items: baseline; white-space: nowrap; gap: 6px; flex: 1; }
-  .info-group.right-group { justify-content: flex-end; }
-  .field-line {
-    border: none;
-    border-bottom: 1px solid #20629F;
-    display: inline-block;
-    min-width: 160px;
-    flex-shrink: 1;
-    flex-grow: 1;
-    line-height: 15px;
-    vertical-align: bottom;
-    margin: 0 4px;
-    padding: 0 2px;
-    background: transparent;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 13.5px;
-    text-align: left;
-  }
-  .field-line.short { min-width: 90px; flex-grow: 0; }
+        /* === HEADER (PERFECT SCREEN MATCH) === */
+        .title-block { text-align: center; }
+        .title-english {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #00A4E4;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+        .title-sub {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #00A4E4;
+            display: inline-block;
+            border-bottom: 2px solid #00A4E4;
+            padding-bottom: 1px;
+            margin-top: 4px;
+        }
+        .title-english.editable, .title-sub.editable { color: #00A4E4 !important; text-align: center !important; }
+        .title-divider { border: none; border-top: 2px solid #938686; margin: 4mm -5mm 4mm -5mm; }
 
-  /* ---------- SALARY SCALE ---------- */
-  .salary-row { display: flex; align-items: baseline; margin-top: 2px; font-size: 13px; gap: 10px; flex-wrap: nowrap; }
-  .salary-label { white-space: nowrap; font-weight: bold; }
-  .salary-item { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; flex: 1; }
-  .salary-item .field-line { min-width: 60px; }
+        /* === OUTER FORM BOX === */
+        .form-box { border: 2px solid #000000; margin-top: 4mm; padding: 4mm 5mm; }
+        .section-divider { border: none; border-top: 1.5px solid #938686; margin: 3mm -5mm; }
+        .subsection-title { font-style: italic; font-weight: bold; color: #000000; font-size: 13px; margin: 0 0 3mm 0; }
+        .note-text { font-size: 11px; font-style: italic; color: #000000; margin: 2px 0 4px 0; }
 
-  /* ---------- DAY GRID TABLES ---------- */
-  table.day-table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-    border: 2px solid #20629F;
-    margin-top: 8px;
-    font-size: 10px;
-  }
-  table.day-table th, table.day-table td { border: 1px solid #20629F; padding: 2px; text-align: center; }
-  table.day-table th.day-col { font-weight: bold; font-size: 10.5px; width: 5.6%; }
-  table.day-table th.label-col, table.day-table td.row-label { width: 12%; font-size: 9.5px; font-weight: bold; line-height: 1.15; padding: 3px 2px; }
-  table.day-table td.row-label .ar { display: block; direction: rtl; }
-  table.day-table td.day-cell { height: 18px; }
-  table.day-table td.day-cell.editable { color: #000 !important; }
+        /* === FIELD ROWS === */
+        .field-row { display: table; width: 100%; table-layout: auto; font-size: 12.5px; margin-bottom: 6px; }
+        .field-row.single-col > .row-left { display: block; }
+        .row-left { display: table-cell; vertical-align: baseline; }
+        .row-right { display: table-cell; vertical-align: baseline; white-space: nowrap; width: 1%; padding-left: 16px; }
+        .field-item { display: inline-block; vertical-align: baseline; margin-right: 12px; white-space: nowrap; }
+        .field-item.grow { min-width: 200px; }
+        .label { font-weight: 500; color: #000000; margin-right: 2px; }
 
-  /* ---------- DETAILS / AMOUNT + SIGNATURES ---------- */
-  .bottom-section { display: flex; justify-content: space-between; margin-top: 10mm; gap: 6mm; }
-  .signatures-col { width: 42%; font-size: 13px; padding-top: 3mm; }
-  .signatures-col .sig-line { margin-bottom: 12mm; }
-  .signatures-col .sig-label-en { display: block; margin-bottom: 1px; }
-  .signatures-col .sig-label-ar { display: block; direction: rtl; text-align: right; margin-bottom: 4mm; }
-  .signatures-col .sig-underline { display: block; border-bottom: 1px solid #20629F; min-height: 8mm; }
+        .field-line {
+            border: none; border-bottom: 1.5px dotted #000000; display: inline-block; min-width: 150px;
+            line-height: 16px; vertical-align: bottom; margin: 0 2px; padding: 0 2px; background: transparent;
+            font-family: 'Cambria', Georgia, 'Times New Roman', serif; font-size: 12.5px;
+        }
+        .field-line.short { min-width: 60px; }
+        .field-line.wide { min-width: 220px; }
+        .field-line.medium { min-width: 120px; }
+        input.field-line { outline: none; -webkit-appearance: none; appearance: none; height: 18px; color: #000000; border-radius: 0; }
+        input.field-line::placeholder { color: rgba(0,0,0,0.32); }
 
-  .details-col { width: 55%; }
-  table.details-table { width: 100%; border-collapse: collapse; border: 2px solid #20629F; font-size: 12.5px; }
-  table.details-table th, table.details-table td { border: 1px solid #20629F; padding: 4px 6px; }
-  table.details-table th { font-weight: bold; text-align: center; }
-  table.details-table td.label-cell { text-align: left; }
-  table.details-table td.label-cell .ar { direction: rtl; float: right; }
-  table.details-table td.amount-cell { text-align: center; width: 35%; }
-  table.details-table tr.total-highlight td { font-weight: bold; }
+        .date-wrap { position: relative; display: inline-block; vertical-align: bottom; min-width: 100px; min-height: 16px; line-height: 16px; border-bottom: 1.5px dotted #000000; margin: 0 2px; padding: 0 2px; }
+        .date-overlay-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; border: none !important; outline: none !important; box-shadow: none !important; background: transparent !important; -webkit-appearance: none; appearance: none; padding: 0; margin: 0; cursor: pointer; z-index: 2; }
+        .date-display { position: relative; z-index: 1; pointer-events: none; display: inline-block; width: 100%; border: none !important; outline: none !important; box-shadow: none !important; }
 
-  /* ---------- TOOLBAR ---------- */
-  .toolbar { position: fixed; left: 14px; right: 14px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 999; }
-  .toolbar button {
-    display: flex; align-items: center; gap: 5px;
-    font-family: Arial, sans-serif; font-size: 12px;
-    padding: 7px 12px; border-radius: 20px;
-    border: 1px solid #20629F; background: #ffffff; color: #20629F;
-    cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
-  .toolbar button:hover { background: #20629F; color: #fff; }
-  @media (max-width: 600px) { .toolbar button { font-size: 11px; padding: 6px 10px; } }
+        /* === CHECKBOXES (Thick, perfect sharp tick) === */
+        .chk-item { display: inline-block; margin-right: 12px; white-space: nowrap; font-weight: 400; }
+        .chk { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #000000; border-radius: 2px; vertical-align: middle; cursor: pointer; position: relative; flex-shrink: 0; margin-left: 3px; }
+        .chk.checked {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 L6.8 12 L13 3.5' fill='none' stroke='%23000000' stroke-width='3.8' stroke-linecap='square' stroke-linejoin='miter'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 85% 85%;
+        }
 
-  /* ---------- SITE FOOTER ---------- */
-  .site-footer {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    color: #888;
-    padding: 18px 0 70px 0;
-  }
-  .site-footer a { color: #20629F; text-decoration: none; font-weight: bold; }
-  .site-footer a:hover { text-decoration: underline; }
-</style>
+        /* === REMARKS (Two lines) === */
+        .remarks-line { border-bottom: 1.5px dotted #000000; min-height: 24px; font-size: 12.5px; color: #000000; padding: 2px; margin-bottom: 6px; }
+
+        /* === REIMBURSEMENT BOX === */
+        .reimb-label, #f-lbl-reimb { font-weight: 400 !important; color: #000000 !important; }
+        .reimb-box { display: inline-block; border: 1.5px solid #000000; min-width: 130px; min-height: 20px; padding: 2px 6px; color: #000000; vertical-align: bottom; font-size: 12.5px; }
+
+        /* === SIGNATURE === */
+        .sig-wrap { position: relative; display: inline-flex; align-items: flex-end; justify-content: center; min-width: 180px; height: 55px; border-bottom: 1.5px dotted #000000; margin: 0 4px; }
+        .sig-line { display: flex; align-items: flex-end; justify-content: center; height: 100%; width: 100%; padding-bottom: 3px; box-sizing: border-box; }
+        .sig-img { display: none; max-height: 48px; max-width: 100%; object-fit: contain; }
+        .sig-hint { font-family: 'Roboto', Arial, sans-serif; font-size: 10px; color: rgba(32,98,159,0.35); pointer-events: none; user-select: none; }
+        .sig-wrap.has-sig .sig-hint { display: none; }
+        @media print { .sig-hint { display: none !important; } }
+        .sig-file-input { display: none; }
+        .sig-choose-btn, .sig-remove-btn { opacity: 0; pointer-events: none; transition: opacity .15s ease; position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-family: 'Roboto', Arial, sans-serif; font-size: 10.5px; white-space: nowrap; border: 1px solid #20629F; background: #ffffff; color: #20629F; padding: 3px 9px; border-radius: 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.18); z-index: 5; }
+        .sig-remove-btn { left: auto; right: 0; transform: none; top: -22px; border-color: #E2393C; color: #E2393C; padding: 2px 7px; }
+        .sig-wrap:hover .sig-choose-btn, .sig-wrap:focus-within .sig-choose-btn { opacity: 1; pointer-events: auto; }
+        .sig-wrap.has-sig:hover .sig-remove-btn, .sig-wrap.has-sig:focus-within .sig-remove-btn { opacity: 1; pointer-events: auto; }
+        .sig-wrap.has-sig .sig-choose-btn { display: none; }
+        .sig-caption { display: block; font-size: 11.5px; font-weight: 400; color: #000000; text-align: center; margin-top: -2px; }
+        .sig-approve-col { display: inline-block; text-align: center; }
+
+        /* === DISTRIBUTION / FOOTER === */
+        .dist-block { font-size: 11px; margin-top: 3mm; }
+        .dist-block .editable { display: block; margin-bottom: 2px; }
+        .final-note { font-size: 11px; font-style: italic; color: #000000; margin-top: 3mm; text-align: center; }
+
+        /* === FINAL COMPACT FORM RULES === */
+        .editable { font-weight: 400 !important; color: #000000 !important; }
+        .field-line.editable, .date-display.editable, .remarks-line.editable, .reimb-box.editable { font-weight: 700 !important; }
+        .title-english.editable, .title-sub.editable { color: #00A4E4 !important; }
+        .section-divider, .leave-signature-divider, .official-use-divider, .document-services-divider { margin-top: 1mm !important; margin-bottom: 1mm !important; }
+        .leave-options { font-size: 9px !important; gap: 0 !important; }
+        .leave-options .chk-item { margin-right: 0 !important; }
+        .leave-options .chk { width: 11px !important; height: 11px !important; border-width: 1px !important; }
+        .remarks-line { min-height: 18px; margin-bottom: 2px; }
+        @media print {
+                        .leave-options { font-size: 9px !important; }
+            .leave-options .chk { width: 11px !important; height: 11px !important; }
+            .remarks-line { min-height: 15px !important; margin-bottom: 1px !important; }
+            .section-divider, .leave-signature-divider, .official-use-divider, .document-services-divider { margin-top: 1mm !important; margin-bottom: 1mm !important; }
+        }
+
+        /* === TOOLBAR === */
+        .toolbar { position: fixed; left: 14px; bottom: 14px; z-index: 999; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+        .toolbar-options { display: none; flex-direction: column; gap: 6px; background: #ffffff; border: 1px solid #20629F; border-radius: 14px; padding: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+        .toolbar-options.open { display: flex; }
+        .toolbar button, .toolbar-options button { display: flex; align-items: center; gap: 7px; font-family: 'Roboto', Arial, sans-serif; font-size: 12.5px; padding: 8px 14px; border-radius: 20px; border: 1px solid #20629F; background: #ffffff; color: #20629F; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15); white-space: nowrap; text-align: left; }
+        .toolbar-options button { box-shadow: none; border: none; padding: 8px 10px; border-radius: 8px; }
+        .toolbar-options button:hover { background: rgba(32,98,159,0.08); }
+        .toolbar > button:hover { background: #20629F; color: #fff; }
+        .toolbar-options hr { width: 100%; border: none; border-top: 1px solid #e0e6ec; margin: 2px 0; }
+        .site-footer { text-align: center; font-family: 'Roboto', Arial, sans-serif; font-size: 12px; color: #20629F; padding: 18px 0 70px 0; }
+        .site-footer a { color: #20629F; text-decoration: none; font-weight: bold; }
+        @media (max-width: 600px) { .toolbar > button, .toolbar-options button { font-size: 11.5px; padding: 7px 10px; } }
+        /* === REFERENCE PDF MATCH OVERRIDES === */
+        .leave-options { display: flex !important; flex-wrap: nowrap !important; justify-content: space-between; align-items: center; width: 100%; gap: 0 !important; }
+        .leave-options .chk-item { margin-right: 0; }
+        .leave-signature-divider, .official-use-divider, .document-services-divider { border-top: 1.5px solid #938686; margin: 2mm -5mm; }
+        .reimb-label, #f-lbl-reimb { font-weight: 400 !important; color: #000000 !important; }
+        @media print {
+            html, body { background: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            #pageWrapper { display: block !important; overflow: visible !important; }
+            .page { width: 210mm !important; min-height: 297mm !important; margin: 0 !important; padding: 5mm !important; }
+            .form-box { margin-top: 4mm !important; padding: 4mm !important; }
+            .editable { color: #000000 !important; font-weight: 400 !important; }
+            .title-english.editable, .title-sub.editable { color: #00A4E4 !important; }
+            .field-row { font-size: 10px !important; margin-bottom: 4px !important; }
+            .field-item { margin-right: 4px !important; }
+            .chk-item { margin-right: 6px !important; }
+            .chk { width: 14px !important; height: 14px !important; border-width: 1.5px !important; }
+            .field-line { font-size: 10px !important; min-width: 90px !important; }
+            .date-wrap { font-size: 10px !important; min-width: 80px !important; }
+            .subsection-title { font-size: 10.5px !important; margin: 2mm 0 1.5mm 0 !important; }
+            .note-text { font-size: 9px !important; margin: 2px 0 !important; }
+            .remarks-line { font-size: 10px !important; min-height: 16px !important; }
+            .reimb-box { font-size: 10px !important; min-width: 80px !important; }
+            .sig-wrap { height: 36px !important; min-width: 120px !important; border-bottom: 1.5px dotted #000000 !important; }
+            .sig-img { max-height: 32px !important; }
+            .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input { display: none !important; }
+            .leave-options { display: flex !important; flex-wrap: nowrap !important; justify-content: space-between !important; font-weight: 400 !important; }
+            @page { size: A4; margin: 0; }
+        }
+        /* User-requested final scope: only leave-type row and divider thickness */
+        .leave-options-row { font-size: 12px !important; line-height: 14px !important; }
+        .leave-options-row .leave-options { justify-content: flex-start !important; gap: 22px !important; }
+        .leave-options-row .chk { width: 14px !important; height: 14px !important; border-width: 1.5px !important; }
+        .section-divider, .leave-signature-divider, .official-use-divider, .document-services-divider { border-top-width: 2px !important; border-top-color: #938686 !important; }
+        @media print {
+            .leave-options-row { font-size: 12px !important; line-height: 14px !important; }
+            .leave-options-row .leave-options { justify-content: flex-start !important; gap: 22px !important; }
+            .leave-options-row .chk { width: 14px !important; height: 14px !important; border-width: 1.5px !important; }
+            .section-divider, .leave-signature-divider, .official-use-divider, .document-services-divider { border-top-width: 2px !important; border-top-color: #938686 !important; }
+        }
+        /* === ONLY CHANGE: ENLARGE AND EXTEND THE LEAVE TYPE ROW === */
+        .leave-options-row {
+            width: 100% !important;
+            white-space: nowrap !important;
+            font-size: 14px !important;
+            line-height: 17px !important;
+        }
+        .leave-options-row .leave-options {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            gap: 22px !important;
+            width: 100% !important;
+            white-space: nowrap !important;
+        }
+        .leave-options-row .chk-item {
+            display: inline-flex !important;
+            align-items: center !important;
+            flex: 0 0 auto !important;
+            gap: 4px !important;
+            margin: 0 !important;
+            white-space: nowrap !important;
+        }
+        .leave-options-row .chk-item .editable {
+            font-size: 14px !important;
+            line-height: 17px !important;
+        }
+        .leave-options-row .chk {
+            width: 16px !important;
+            height: 16px !important;
+            margin-left: 0 !important;
+            flex: 0 0 auto !important;
+        }
+        @media print {
+            .leave-options-row {
+                width: 100% !important;
+                font-size: 14px !important;
+                line-height: 17px !important;
+            }
+            .leave-options-row .leave-options {
+                justify-content: flex-start !important;
+                gap: 22px !important;
+                width: 100% !important;
+            }
+            .leave-options-row .chk-item { gap: 4px !important; margin: 0 !important; }
+            .leave-options-row .chk-item .editable { font-size: 14px !important; line-height: 17px !important; }
+            .leave-options-row .chk { width: 16px !important; height: 16px !important; }
+        }
+        /* === ONLY CHANGE: LARGER CHECKBOXES AND HIGHER GENDER BOXES === */
+        .chk {
+            width: 18px !important;
+            height: 18px !important;
+        }
+        .leave-options-row .chk {
+            width: 18px !important;
+            height: 18px !important;
+        }
+        #f-chk-gender-m,
+        #f-chk-gender-f {
+            transform: translateY(-2px);
+        }
+        /* === ONLY CHANGE: MORE LEAVE-ROW DISTANCE, SMALL HR CHECKBOXES === */
+        .leave-options-row .leave-options { gap: 28px !important; }
+        .subsection-title#f-sec-hr ~ .field-row .chk {
+            width: 11px !important;
+            height: 11px !important;
+        }
+        @media print {
+            .leave-options-row .leave-options { gap: 28px !important; }
+            .subsection-title#f-sec-hr ~ .field-row .chk {
+                width: 11px !important;
+                height: 11px !important;
+            }
+        }
+        #f-lbl-unpaid-bold { font-weight: bold !important; }
+        .remarks-inline-row { display: flex !important; align-items: baseline !important; width: 100% !important; }
+        .remarks-second-row { margin-top: 2px; }
+        .remarks-inline-row #f-lbl-remarks { flex: 0 0 auto; margin-right: 8px; font-style: normal !important; }
+        .remarks-inline-line {
+            display: inline-block;
+            flex: 1 1 auto;
+            min-width: 0;
+            height: 18px;
+            border-bottom: 1.5px dotted #000000;
+            color: #000000;
+            font-size: 12.5px;
+            font-weight: 700 !important;
+            outline: none;
+        }
+        @media print {
+            .remarks-inline-row { display: flex !important; }
+            .remarks-inline-line { height: 16px !important; font-size: 10px !important; }
+        }
+        /* === ONLY CHANGE: LARGE OFFICIAL USE AND DOCUMENT SERVICES CHECKBOXES === */
+        #f-chk-first,
+        #f-chk-business,
+        #f-chk-economy,
+        #f-chk-exit,
+        #f-chk-cancelvisa {
+            width: 18px !important;
+            height: 18px !important;
+            border-width: 1.5px !important;
+        }
+        @media print {
+            #f-chk-first,
+            #f-chk-business,
+            #f-chk-economy,
+            #f-chk-exit,
+            #f-chk-cancelvisa {
+                width: 18px !important;
+                height: 18px !important;
+                border-width: 1.5px !important;
+            }
+        }
+        /* Thin full-width black divider below LEAVE APPLICATION. */
+        .title-divider {
+            width: calc(100% + 10mm) !important;
+            border-top: 1px solid #000000 !important;
+            margin: 4mm -5mm !important;
+        }
+        @media print {
+            .title-divider {
+                width: calc(100% + 8mm) !important;
+                border-top: 1px solid #000000 !important;
+                margin: 4mm -4mm !important;
+            }
+        }
+        /* Only user-entry fields display uppercase and italic. Static labels stay unchanged. */
+        .field-line.editable,
+        .remarks-inline-line.editable,
+        .reimb-box.editable {
+            text-transform: uppercase !important;
+            font-style: italic !important;
+        }
+        /* All checkboxes below For Official use */
+        #f-chk-first,
+        #f-chk-business,
+        #f-chk-economy,
+        #f-chk-exit,
+        #f-chk-cancelvisa {
+            width: 22px !important;
+            height: 22px !important;
+            border-width: 1.5px !important;
+        }
+        @media print {
+            #f-chk-first,
+            #f-chk-business,
+            #f-chk-economy,
+            #f-chk-exit,
+            #f-chk-cancelvisa {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            .section-divider,
+            .leave-signature-divider,
+            .official-use-divider,
+            .document-services-divider {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+        }
+    </style>
 </head>
 <body class="notranslate" translate="no">
 
-<div id="pageWrapper">
-<div class="page" id="sheetPage">
+    <div id="pageWrapper">
+        <div class="page" id="sheetPage">
+            <div class="form-box">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="left editable" id="f-header-left" contenteditable="true" style="color: #20629F !important; text-align:left;">
-      Telefax : 44363994<br>
-      P.O. Box : 32177<br>
-      Doha - Qatar
+                <!-- ====== HEADER ====== -->
+                <div class="title-block">
+                    <div class="title-english editable" id="f-title-1" contenteditable="true">AQUA CLEAN BUILDING SERVICES COMPANY LLC</div>
+                    <div class="title-sub editable" id="f-title-2" contenteditable="true">LEAVE APPLICATION</div>
+                </div>
+                <hr class="title-divider">
+
+                <!-- ====== EMPLOYEE SECTION ====== -->
+                <div class="subsection-title editable" id="f-sec-emp" contenteditable="true">(To be completed by the Employee)</div>
+
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-name" contenteditable="true">Name</span><span class="field-line wide editable" id="f-name" contenteditable="true"></span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-empno" contenteditable="true">Employee No</span><span class="field-line medium editable" id="f-empno" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item"><span class="label editable" id="f-lbl-gender" contenteditable="true">Gender</span><span class="chk-item"><span class="editable" id="f-lbl-m" contenteditable="true">M</span><span class="chk" id="f-chk-gender-m" data-group="gender"></span></span><span class="chk-item"><span class="editable" id="f-lbl-f" contenteditable="true">F</span><span class="chk" id="f-chk-gender-f" data-group="gender"></span></span></span>
+                        <span class="field-item"><span class="label editable" id="f-lbl-qid" contenteditable="true">QID Expiry</span><span class="date-wrap"><span class="date-display editable" id="f-qid-display"></span><input type="date" class="date-overlay-input" id="f-qid"></span></span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-salary" contenteditable="true">Basic Salary</span><span class="field-line medium editable" id="f-salary" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item"><span class="label editable" id="f-lbl-dept" contenteditable="true">Department</span><span class="field-line medium editable" id="f-dept" contenteditable="true"></span></span>
+                        <span class="field-item"><span class="label editable" id="f-lbl-occ" contenteditable="true">Occupation</span><span class="field-line medium editable" id="f-occ" contenteditable="true"></span></span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-loc" contenteditable="true">Location (Proj.Site)</span><span class="field-line medium editable" id="f-loc" contenteditable="true"></span></span></span>
+                </div>
+
+                <!-- Leave Pay & Termination (No commas) -->
+                <div class="field-row single-col leave-options-row">
+                    <span class="row-left leave-options">
+                        <span class="chk-item"><span class="editable" id="f-lbl-annual" contenteditable="true">Annual Leave</span><span class="chk" id="f-chk-annual" data-group="leave-type"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-resignation" contenteditable="true">Resignation</span><span class="chk" id="f-chk-resignation" data-group="leave-type"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-emergency" contenteditable="true">Emergency</span><span class="chk" id="f-chk-emergency" data-group="leave-type"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-leavepay" contenteditable="true">Leave Pay</span><span class="chk" id="f-chk-leavepay" data-group="leave-type"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-termination" contenteditable="true">Termination</span><span class="chk" id="f-chk-termination" data-group="leave-type"></span></span>
+                    </span>
+                                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item"><span class="label editable" id="f-lbl-from" contenteditable="true">From:</span><span class="date-wrap"><span class="date-display editable" id="f-from-display"></span><input type="date" class="date-overlay-input" id="f-from"></span></span>
+                        <span class="field-item"><span class="label editable" id="f-lbl-to" contenteditable="true">To</span><span class="date-wrap"><span class="date-display editable" id="f-to-display"></span><input type="date" class="date-overlay-input" id="f-to"></span><span class="editable" id="f-lbl-inclusive" contenteditable="true" style="color:#2F5496 !important;">(dates inclusive)</span></span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-nodays" contenteditable="true">No. of days</span><span class="field-line short editable" id="f-nodays" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-homecontact" contenteditable="true">Home country contact no.</span><span class="field-line wide editable" id="f-homecontact" contenteditable="true"></span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-mobqatar" contenteditable="true">Mob. No. (Qatar)</span><span class="field-line medium editable" id="f-mobqatar" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item"><span class="label editable" id="f-lbl-returned" contenteditable="true">Date returned from last leave</span><span class="date-wrap"><span class="date-display editable" id="f-returned-display"></span><input type="date" class="date-overlay-input" id="f-returned"></span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-formdate" contenteditable="true">Date:</span><span class="date-wrap"><span class="date-display editable" id="f-formdate-display"></span><input type="date" class="date-overlay-input" id="f-formdate"></span></span></span>
+                </div>
+
+                                <div class="field-row" style="align-items:flex-end;">
+                    <span class="row-left"><span class="field-item"><span class="label editable" id="f-lbl-empsig" contenteditable="true">Employee's Signature</span><span class="sig-wrap" id="sigWrapEmp" data-sig-id="sig-emp" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgEmp"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileEmp"></span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-email" contenteditable="true">Email ID:</span><input type="email" inputmode="email" autocomplete="email" class="field-line wide editable" id="f-email" placeholder=""></span></span>
+                                </div>
+
+                <div class="section-divider leave-signature-divider"></div>
+
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-sanctioned" contenteditable="true">Sanctioned by the Department Head</span><span class="field-line wide editable" id="f-sanctioned" contenteditable="true"></span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-sanctioned-date" contenteditable="true">Date</span><span class="date-wrap"><span class="date-display editable" id="f-sanctioned-date-display"></span><input type="date" class="date-overlay-input" id="f-sanctioned-date"></span></span></span>
+                </div>
+                <div class="note-text editable" id="f-note-relief" contenteditable="true">(Department Head MUST specify if leave relief is required / not required)</div>
+
+                <hr class="section-divider">
+
+                <!-- ====== HR & A SECTION ====== -->
+                <div class="subsection-title editable" id="f-sec-hr" contenteditable="true">(To be completed by HR &amp; A Department)</div>
+
+                <div class="field-row single-col">
+                    <span class="row-left"><span class="field-item"><span class="label editable" id="f-lbl-joining" contenteditable="true">Date of Joining:</span><span class="date-wrap"><span class="date-display editable" id="f-joining-display"></span><input type="date" class="date-overlay-input" id="f-joining"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item"><span class="label editable" id="f-lbl-lastleave" contenteditable="true">Last leave taken from:</span><span class="date-wrap"><span class="date-display editable" id="f-lastleave-from-display"></span><input type="date" class="date-overlay-input" id="f-lastleave-from"></span></span>
+                        <span class="field-item"><span class="label editable" id="f-lbl-lastleave-to" contenteditable="true">To</span><span class="date-wrap"><span class="date-display editable" id="f-lastleave-to-display"></span><input type="date" class="date-overlay-input" id="f-lastleave-to"></span></span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-lastleave-days" contenteditable="true">Days</span><span class="field-line short editable" id="f-lastleave-days" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item"><span class="label editable" id="f-lbl-earned" contenteditable="true">Earned leave due from:</span><span class="date-wrap"><span class="date-display editable" id="f-earned-from-display"></span><input type="date" class="date-overlay-input" id="f-earned-from"></span></span>
+                        <span class="field-item"><span class="label editable" id="f-lbl-earned-to" contenteditable="true">To</span><span class="date-wrap"><span class="date-display editable" id="f-earned-to-display"></span><input type="date" class="date-overlay-input" id="f-earned-to"></span></span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-earned-days" contenteditable="true">Days</span><span class="field-line short editable" id="f-earned-days" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="label editable" id="f-lbl-paid" contenteditable="true">Paid leave now requested (</span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-paid-annual" contenteditable="true">annual</span><span class="chk" id="f-chk-paid-annual"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-paid-sickness" contenteditable="true">sickness</span><span class="chk" id="f-chk-paid-sickness"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-paid-emergency" contenteditable="true">emergency</span><span class="chk" id="f-chk-paid-emergency"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-paid-compassionate" contenteditable="true">compassionate</span><span class="chk" id="f-chk-paid-compassionate"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-paid-other" contenteditable="true">other</span><span class="chk" id="f-chk-paid-other"></span></span>
+                        <span class="editable" id="f-lbl-paid-close" contenteditable="true">)</span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-paid-days" contenteditable="true">Days</span><span class="field-line short editable" id="f-paid-days" contenteditable="true"></span></span></span>
+                </div>
+
+                <!-- ONLY Unpaid is bold, rest normal -->
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="label editable" id="f-lbl-unpaid-bold" contenteditable="true" style="font-weight:bold;">Unpaid</span>
+                        <span class="label editable" id="f-lbl-unpaid-text" contenteditable="true"> leave now requested (</span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-unpaid-annual" contenteditable="true">annual</span><span class="chk" id="f-chk-unpaid-annual"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-unpaid-sickness" contenteditable="true">sickness</span><span class="chk" id="f-chk-unpaid-sickness"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-unpaid-emergency" contenteditable="true">emergency</span><span class="chk" id="f-chk-unpaid-emergency"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-unpaid-compassionate" contenteditable="true">compassionate</span><span class="chk" id="f-chk-unpaid-compassionate"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-unpaid-other" contenteditable="true">other</span><span class="chk" id="f-chk-unpaid-other"></span></span>
+                        <span class="editable" id="f-lbl-unpaid-close" contenteditable="true">)</span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-unpaid-days" contenteditable="true">Days</span><span class="field-line short editable" id="f-unpaid-days" contenteditable="true"></span></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-total" contenteditable="true">Total leave requested</span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-total-days" contenteditable="true">Days</span><span class="field-line short editable" id="f-total-days" contenteditable="true"></span></span></span>
+                </div>
+
+                <!-- Remarks label and dotted line on one row -->
+                <div class="field-row remarks-inline-row">
+                    <span class="label editable" id="f-lbl-remarks" contenteditable="true">Remarks</span>
+                    <span class="remarks-inline-line editable" id="f-remarks-1" contenteditable="true"></span>
+                </div>
+                <div class="remarks-inline-row remarks-second-row">
+                    <span class="remarks-inline-line editable" id="f-remarks-2" contenteditable="true"></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left" style="display:flex; flex-direction:column; align-items:flex-start;">
+                        <span class="sig-wrap" id="sigWrapHr1" data-sig-id="sig-hr1" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgHr1"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileHr1"></span>
+                        <span class="editable" id="f-lbl-verified1" contenteditable="true" style="font-size:12.5px; margin-top:2px;">Verified by HR &amp; A Dept.</span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-verified1-date" contenteditable="true">Date</span><span class="date-wrap"><span class="date-display editable" id="f-verified1-date-display"></span><input type="date" class="date-overlay-input" id="f-verified1-date"></span></span></span>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- ====== OFFICIAL USE SECTION ====== -->
+                                <div class="subsection-title editable" id="f-sec-official" contenteditable="true" style="font-style:italic;">For Official use:</div>
+                <div class="section-divider official-use-divider"></div>
+                <div class="note-text editable" id="f-lbl-travel" contenteditable="true">To: Travel section (Senior employees if entitled should provide details of accompanying family members)</div>
+
+                <!-- Destination + Class Checkboxes -->
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-destination" contenteditable="true">Destination</span><span class="field-line wide editable" id="f-destination" contenteditable="true"></span></span></span>
+                    <span class="row-right"><span class="field-item">
+                        <span class="label editable" id="f-lbl-class" contenteditable="true">Class:</span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-first" contenteditable="true">First</span><span class="chk" id="f-chk-first" data-group="class"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-business" contenteditable="true">Business</span><span class="chk" id="f-chk-business" data-group="class"></span></span>
+                        <span class="chk-item"><span class="editable" id="f-lbl-economy" contenteditable="true">Economy</span><span class="chk" id="f-chk-economy" data-group="class"></span></span>
+                    </span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item"><span class="label editable" id="f-lbl-traveldate" contenteditable="true">Travel Date</span><span class="date-wrap"><span class="date-display editable" id="f-traveldate-display"></span><input type="date" class="date-overlay-input" id="f-traveldate"></span></span>
+                        <span class="field-item"><span class="label editable" id="f-lbl-returndate" contenteditable="true">Return Date</span><span class="date-wrap"><span class="date-display editable" id="f-returndate-display"></span><input type="date" class="date-overlay-input" id="f-returndate"></span></span>
+                    </span>
+                </div>
+
+                <div class="field-row">
+                    <span class="field-item"><span class="reimb-label editable" id="f-lbl-reimb" contenteditable="true">Reimbursement Amount: Qrs.</span><span class="reimb-box editable" id="f-reimb" contenteditable="true"></span></span>
+                </div>
+
+                <div class="field-row">
+                    <span class="row-left" style="display:flex; flex-direction:column; align-items:flex-start;">
+                        <span class="sig-wrap" id="sigWrapHr2" data-sig-id="sig-hr2" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgHr2"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileHr2"></span>
+                        <span class="editable" id="f-lbl-verified2" contenteditable="true" style="font-size:12.5px; margin-top:2px;">Verified by HR &amp; A Dept.</span>
+                    </span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-verified2-date" contenteditable="true">Date</span><span class="date-wrap"><span class="date-display editable" id="f-verified2-date-display"></span><input type="date" class="date-overlay-input" id="f-verified2-date"></span></span></span>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- ====== DOCUMENT SERVICES SECTION ====== -->
+                <div class="field-row">
+                    <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-docservices" contenteditable="true">To: Document Services</span></span></span>
+                    <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-docservices-date" contenteditable="true">Date</span><span class="date-wrap"><span class="date-display editable" id="f-docservices-date-display"></span><input type="date" class="date-overlay-input" id="f-docservices-date"></span></span></span>
+                </div>
+
+                <!-- Exit / Cancel Visa + Document Service Rep -->
+                <div class="field-row">
+                    <span class="row-left">
+                        <span class="field-item grow">
+                            <span class="label editable" id="f-lbl-exit" contenteditable="true">Please arrange for</span>
+                            <span class="chk-item"><span class="editable" id="f-lbl-exit-opt" contenteditable="true">Exit</span><span class="chk" id="f-chk-exit"></span></span>
+                            <span class="editable" id="f-lbl-slash" contenteditable="true">/</span>
+                            <span class="chk-item"><span class="editable" id="f-lbl-cancelvisa" contenteditable="true">Cancel Visa</span><span class="chk" id="f-chk-cancelvisa"></span></span>
+                            <span class="label editable" id="f-lbl-exit-on" contenteditable="true">on</span>
+                            <span class="date-wrap"><span class="date-display editable" id="f-exit-date-display"></span><input type="date" class="date-overlay-input" id="f-exit-date"></span>
+                        </span>
+                    </span>
+                    <span class="row-right" style="display:flex; flex-direction:column; align-items:flex-start;">
+                        <span class="sig-wrap" id="sigWrapDoc" data-sig-id="sig-doc" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgDoc"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileDoc"></span>
+                        <span class="editable" id="f-lbl-docrep" contenteditable="true" style="font-size:12.5px; margin-top:2px;">Document Service Representative</span>
+                    </span>
+                </div>
+
+                <div class="section-divider document-services-divider"></div>
+
+                <!-- Approved By Row -->
+                <div class="field-row" style="align-items:flex-end; margin-top: 6px;">
+                    <span class="row-left">
+                        <span class="sig-approve-col">
+                            <span class="sig-wrap" id="sigWrapHrApprove" data-sig-id="sig-hr-approve" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgHrApprove"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileHrApprove"></span>
+                            <span class="sig-caption editable" id="f-lbl-approve-hr" contenteditable="true">Approved by: (HR &amp; A)</span>
+                        </span>
+                    </span>
+                    <span class="row-right">
+                        <span class="sig-approve-col">
+                            <span class="sig-wrap" id="sigWrapMgmt" data-sig-id="sig-mgmt" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgMgmt"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileMgmt"></span>
+                            <span class="sig-caption editable" id="f-lbl-approve-mgmt" contenteditable="true">Approved by: (Management)</span>
+                        </span>
+                    </span>
+                </div>
+
+                <!-- Distribution -->
+                <div class="dist-block">
+                    <span class="editable" id="f-lbl-dist" contenteditable="true">Distribution:&nbsp;&nbsp;&nbsp;Original to Personal file / Copy to employee</span>
+                    <span class="editable" id="f-lbl-dist2" contenteditable="true">Copy to Accounts Department for Settlement</span>
+                    <span class="editable" id="f-lbl-dist3" contenteditable="true">Copy to Millennium Travels for booking tickets</span>
+                    <span class="editable" id="f-lbl-dist4" contenteditable="true">Copy to Document services for Exit / Cancel Permit</span>
+                </div>
+                <div class="final-note editable" id="f-final-note" contenteditable="true">(Please note that all Leave Applications should be completed one month before the requested date)</div>
+
+            </div>
+        </div>
     </div>
-    <div class="center">
-      <img id="logoImg" src="https://i.imgur.com/y2wOlu7.png" crossorigin="anonymous" alt="Aqua Clean Facility Services Co. - click to refresh">
-    </div>
-    <div class="right arabic editable" id="f-header-right" contenteditable="true" style="color: #20629F !important;">
-      تليفاكس: 44363994<br>
-      ص.ب: 32177<br>
-      الدوحة - قطر
-    </div>
-  </div>
 
-  <!-- TITLE -->
-  <div class="title-row">
-    <div class="title-arabic editable" id="f-title-ar" contenteditable="true" style="color: #20629F !important;">بطاقة عامل</div>
-    <div class="title-english editable" id="f-title-en" contenteditable="true" style="color: #20629F !important;">LABOUR CARD</div>
-  </div>
+    <div class="site-footer">Developed by <a href="https://olkite.com" target="_blank" rel="noopener">Hassan</a></div>
 
-  <!-- NAME / PROFESSION -->
-  <div class="info-block">
-    <div class="info-row">
-      <div class="info-group">
-        <span class="editable" id="f-name-label-en" contenteditable="true" style="color:#20629F !important;">Name :</span>
-        <span class="field-line editable" id="f-name" contenteditable="true"></span>
-        <span class="arabic editable" id="f-name-label-ar" contenteditable="true" style="color:#20629F !important;">الأسم:</span>
-      </div>
-      <div class="info-group right-group">
-        <span class="editable" id="f-prof-label-en" contenteditable="true" style="color:#20629F !important;">Profession :</span>
-        <span class="field-line editable" id="f-profession" contenteditable="true"></span>
-        <span class="arabic editable" id="f-prof-label-ar" contenteditable="true" style="color:#20629F !important;">المهنة :</span>
-      </div>
-    </div>
-    <div class="info-row">
-      <div class="info-group">
-        <span class="editable" id="f-month-label-en" contenteditable="true" style="color:#20629F !important;">Month :</span>
-        <span class="field-line editable" id="f-month" contenteditable="true"></span>
-        <span class="arabic editable" id="f-month-label-ar" contenteditable="true" style="color:#20629F !important;">شهر:</span>
-      </div>
-      <div class="info-group right-group">
-        <span class="editable" id="f-year-label-en" contenteditable="true" style="color:#20629F !important;">Year :</span>
-        <span class="field-line short editable" id="f-year" contenteditable="true"></span>
-        <span class="arabic editable" id="f-year-label-ar" contenteditable="true" style="color:#20629F !important;">سنة :</span>
-      </div>
+    <!-- ====== TOOLBAR ====== -->
+    <div class="toolbar" id="toolbarMenu">
+        <div class="toolbar-options" id="toolbarOptions">
+            <button id="btnPrint">🖨️ Print</button>
+            <button id="btnSavePDF">📄 Save as PDF</button>
+            <hr>
+            <button id="btnExport">⬇️ Export Data</button>
+            <button id="btnImport">⬆️ Import Data</button>
+            <button id="btnClearForm">🧹 Clear Form</button>
+            <hr>
+            <div id="pageZoomControl" style="display:flex; align-items:center; gap:8px; padding:6px 10px; font-family:'Roboto',Arial,sans-serif; font-size:12px; color:#20629F;">
+                <span>Zoom</span>
+                <input type="range" id="pageZoomSlider" min="50" max="180" step="10" value="100" style="width:110px; accent-color:#20629F;">
+                <span id="pageZoomValue" style="min-width:34px; text-align:right;">100%</span>
+            </div>
+        </div>
+        <button id="btnMenuToggle">☰ Menu</button>
+        <input type="file" id="importFileInput" accept="application/json" style="display:none;">
     </div>
 
-    <!-- SALARY SCALE -->
-    <div class="salary-row">
-      <span class="salary-label editable" id="f-scale-label-en" contenteditable="true" style="color:#20629F !important;">Salary<br>Scale</span>
-      <span class="salary-item">
-        <span class="editable" id="f-permonth-en" contenteditable="true" style="color:#20629F !important;">Per Month :</span>
-        <span class="field-line editable" id="f-permonth-val" contenteditable="true"></span>
-        <span class="arabic editable" id="f-permonth-ar" contenteditable="true" style="color:#20629F !important;">في شهر :</span>
-      </span>
-      <span class="salary-item">
-        <span class="editable" id="f-perday-en" contenteditable="true" style="color:#20629F !important;">Per Day :</span>
-        <span class="field-line editable" id="f-perday-val" contenteditable="true"></span>
-        <span class="arabic editable" id="f-perday-ar" contenteditable="true" style="color:#20629F !important;">يومية :</span>
-      </span>
-      <span class="salary-item">
-        <span class="editable" id="f-perhour-en" contenteditable="true" style="color:#20629F !important;">Per Hour :</span>
-        <span class="field-line editable" id="f-perhour-val" contenteditable="true"></span>
-        <span class="arabic editable" id="f-perhour-ar" contenteditable="true" style="color:#20629F !important;">في ساعة :</span>
-      </span>
-    </div>
-  </div>
+    <script>
+        const STORAGE_KEY = 'aquaclean_leave_application_v8';
 
-  <!-- DAY GRID 1 (days 1-16) -->
-  <table class="day-table" id="dayTable1"></table>
-
-  <!-- DAY GRID 2 (days 17-31) -->
-  <table class="day-table" id="dayTable2" style="margin-top:4px;"></table>
-
-  <!-- DETAILS / AMOUNT + SIGNATURES -->
-  <div class="bottom-section">
-    <div class="signatures-col">
-      <div class="sig-line">
-        <span class="sig-label-en editable" id="f-manager-en" contenteditable="true" style="color:#20629F !important;">Manager</span>
-        <span class="sig-label-ar arabic editable" id="f-manager-ar" contenteditable="true" style="color:#20629F !important;">مدير</span>
-        <span class="sig-underline editable" id="f-manager-sig" contenteditable="true"></span>
-      </div>
-      <div class="sig-line">
-        <span class="sig-label-en editable" id="f-receiver-en" contenteditable="true" style="color:#20629F !important;">Receiver's Signature</span>
-        <span class="sig-label-ar arabic editable" id="f-receiver-ar" contenteditable="true" style="color:#20629F !important;">توقيع المستلم</span>
-        <span class="sig-underline editable" id="f-receiver-sig" contenteditable="true"></span>
-      </div>
-    </div>
-
-    <div class="details-col">
-      <table class="details-table">
-        <tr>
-          <th><span class="editable" id="f-details-en" contenteditable="true" style="color:#20629F !important;">Details</span></th>
-          <th><span class="arabic editable" id="f-details-ar" contenteditable="true" style="color:#20629F !important;">التفاصيل</span></th>
-          <th><span class="editable" id="f-amount-en" contenteditable="true" style="color:#20629F !important;">Amount</span> <span class="arabic editable" id="f-amount-ar" contenteditable="true" style="color:#20629F !important;">المبالغ</span></th>
-        </tr>
-        <tr>
-          <td colspan="2" class="label-cell"><span class="editable" id="f-basic-en" contenteditable="true" style="color:#20629F !important;">Basic Salary</span><span class="arabic editable" id="f-basic-ar" contenteditable="true" style="color:#20629F !important;">الراتب الأساسي</span></td>
-          <td class="amount-cell editable" id="f-basic-amt" contenteditable="true"></td>
-        </tr>
-        <tr>
-          <td colspan="2" class="label-cell"><span class="editable" id="f-ot-en" contenteditable="true" style="color:#20629F !important;">Add. Overtime</span><span class="arabic editable" id="f-ot-ar" contenteditable="true" style="color:#20629F !important;">الساعات الإضافية</span></td>
-          <td class="amount-cell editable" id="f-ot-amt" contenteditable="true"></td>
-        </tr>
-        <tr class="total-highlight">
-          <td colspan="2" class="label-cell"><span class="editable" id="f-total-en" contenteditable="true" style="color:#20629F !important;">Total</span><span class="arabic editable" id="f-total-ar" contenteditable="true" style="color:#20629F !important;">المجموع</span></td>
-          <td class="amount-cell editable" id="f-total-amt" contenteditable="true"></td>
-        </tr>
-        <tr>
-          <td colspan="2" class="label-cell"><span class="editable" id="f-advance-en" contenteditable="true" style="color:#20629F !important;">Less Advance Received</span><span class="arabic editable" id="f-advance-ar" contenteditable="true" style="color:#20629F !important;">سلفيات</span></td>
-          <td class="amount-cell editable" id="f-advance-amt" contenteditable="true"></td>
-        </tr>
-        <tr class="total-highlight">
-          <td colspan="2" class="label-cell"><span class="editable" id="f-balance-en" contenteditable="true" style="color:#20629F !important;">Balance</span><span class="arabic editable" id="f-balance-ar" contenteditable="true" style="color:#20629F !important;">الباقي</span></td>
-          <td class="amount-cell editable" id="f-balance-amt" contenteditable="true"></td>
-        </tr>
-      </table>
-    </div>
-  </div>
-
-</div>
-</div>
-
-<!-- Site footer -->
-<div class="site-footer">
-  Developed by <a href="https://olkite.com" target="_blank" rel="noopener">Hassan</a>
-</div>
-
-<!-- TOOLBAR -->
-<div class="toolbar">
-  <button id="btnPrint" title="Send to your printer">🖨️ Print</button>
-  <button id="btnSavePDF" title="Download this sheet as a PDF file">📄 Save as PDF</button>
-</div>
-
-<script>
-  const STORAGE_KEY = 'aquaclean_labour_card_v1';
-
-  const ROWS = [
-    { key: 'morning', en: 'Morning', ar: 'صباحاً' },
-    { key: 'afternoon', en: 'Afternoon', ar: 'ظهراً' },
-    { key: 'overtime', en: 'Overtime', ar: 'الساعات الإضافية' }
-  ];
-
-  function buildDayTable(tableId, startDay, endDay) {
-    const table = document.getElementById(tableId);
-    table.innerHTML = '';
-    const thead = document.createElement('thead');
-    const headRow = document.createElement('tr');
-    const labelTh = document.createElement('th');
-    labelTh.className = 'label-col';
-    labelTh.textContent = '';
-    headRow.appendChild(labelTh);
-    for (let d = startDay; d <= endDay; d++) {
-      const th = document.createElement('th');
-      th.className = 'day-col';
-      th.textContent = d;
-      headRow.appendChild(th);
-    }
-    thead.appendChild(headRow);
-    table.appendChild(thead);
-
-    const tbody = document.createElement('tbody');
-    ROWS.forEach(row => {
-      const tr = document.createElement('tr');
-      const labelTd = document.createElement('td');
-      labelTd.className = 'row-label';
-      labelTd.innerHTML = `${row.en}<span class="ar">${row.ar}</span>`;
-      tr.appendChild(labelTd);
-      for (let d = startDay; d <= endDay; d++) {
-        const td = document.createElement('td');
-        td.className = 'day-cell editable';
-        td.id = `f-day${d}-${row.key}`;
-        td.contentEditable = 'true';
-        tr.appendChild(td);
-      }
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-  }
-
-  function loadData() {
-    let data = {};
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) data = JSON.parse(raw);
-    } catch (e) { console.error('load error', e); }
-
-    document.querySelectorAll('.editable[id]').forEach(el => {
-      if (data[el.id] === undefined) return;
-      if (el.id.includes('header')) {
-        el.innerHTML = data[el.id];
-      } else {
-        el.innerText = data[el.id];
-      }
-    });
-  }
-
-  function saveField(el) {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const data = raw ? JSON.parse(raw) : {};
-      if (el.id.includes('header')) {
-        data[el.id] = el.innerHTML;
-      } else {
-        data[el.id] = el.innerText;
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) {
-      console.error('save error', e);
-    }
-  }
-
-  function wireEditableFields() {
-    document.querySelectorAll('.editable[id]').forEach(el => {
-      el.addEventListener('input', () => saveField(el));
-      el.addEventListener('blur', () => saveField(el));
-    });
-  }
-
-  function recalcTotals() {
-    const basic = parseFloat(document.getElementById('f-basic-amt').innerText) || 0;
-    const ot = parseFloat(document.getElementById('f-ot-amt').innerText) || 0;
-    const advance = parseFloat(document.getElementById('f-advance-amt').innerText) || 0;
-
-    const total = Math.round((basic + ot) * 100) / 100;
-    const balance = Math.round((total - advance) * 100) / 100;
-
-    const totalEl = document.getElementById('f-total-amt');
-    const balanceEl = document.getElementById('f-balance-amt');
-
-    if (document.activeElement !== totalEl) {
-      totalEl.innerText = total ? String(total) : '';
-      saveField(totalEl);
-    }
-    if (document.activeElement !== balanceEl) {
-      balanceEl.innerText = balance ? String(balance) : '';
-      saveField(balanceEl);
-    }
-  }
-
-  function wireTotalCalculation() {
-    ['f-basic-amt', 'f-ot-amt', 'f-advance-amt'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('input', recalcTotals);
-    });
-  }
-
-  let isOutputMode = false;
-
-  function fitPage() {
-    if (isOutputMode) return;
-    const page = document.getElementById('sheetPage');
-    const wrapper = document.getElementById('pageWrapper');
-    page.style.transform = 'none';
-    const naturalWidth = page.offsetWidth;
-    const naturalHeight = page.offsetHeight;
-    const available = wrapper.clientWidth - 12;
-    let scale = 1;
-    if (available < naturalWidth) scale = available / naturalWidth;
-    if (scale < 1) {
-      page.style.transform = `scale(${scale})`;
-      page.style.transformOrigin = 'top center';
-      wrapper.style.height = (naturalHeight * scale + 20) + 'px';
-    } else {
-      page.style.transform = 'none';
-      wrapper.style.height = 'auto';
-    }
-  }
-
-  let resizeTimer = null;
-  function scheduleFitPage() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(fitPage, 100);
-  }
-
-  function resetForOutput() {
-    isOutputMode = true;
-    const page = document.getElementById('sheetPage');
-    const wrapper = document.getElementById('pageWrapper');
-
-    window.scrollTo(0, 0);
-
-    page.style.transform = 'none';
-    page.style.margin = '0';
-    page.style.boxShadow = 'none';
-
-    wrapper.style.height = 'auto';
-    wrapper.style.overflow = 'visible';
-    wrapper.style.display = 'block';
-
-    document.querySelectorAll('.toolbar, .site-footer').forEach(el => {
-      el.style.display = 'none';
-    });
-  }
-
-  function restoreAfterOutput() {
-    isOutputMode = false;
-    const page = document.getElementById('sheetPage');
-    const wrapper = document.getElementById('pageWrapper');
-
-    page.style.margin = '10mm auto';
-    page.style.boxShadow = '';
-    wrapper.style.display = 'flex';
-
-    document.querySelectorAll('.toolbar, .site-footer').forEach(el => {
-      el.style.display = '';
-    });
-    fitPage();
-  }
-
-  window.addEventListener('beforeprint', resetForOutput);
-  window.addEventListener('afterprint', restoreAfterOutput);
-
-  async function printDocument() {
-    try {
-      await document.fonts.ready;
-      const logo = document.getElementById('logoImg');
-      if (logo && !logo.complete) {
-        await new Promise(r => { logo.onload = r; logo.onerror = r; });
-      }
-    } catch (e) { /* ignore */ }
-
-    const prevTitle = document.title;
-    document.title = 'AquaClean_Labour_Card';
-    window.print();
-    setTimeout(() => { document.title = prevTitle; }, 1000);
-  }
-
-  document.getElementById('btnPrint').addEventListener('click', printDocument);
-
-  document.getElementById('btnSavePDF').addEventListener('click', async () => {
-    const btn = document.getElementById('btnSavePDF');
-    const prevLabel = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '⏳ Generating…';
-    try {
-      try {
-        await document.fonts.ready;
-        const logo = document.getElementById('logoImg');
-        if (logo && !logo.complete) {
-          await new Promise(r => { logo.onload = r; logo.onerror = r; });
+        function formatDateDisplay(iso) {
+            if (!iso) return '';
+            const [y, m, d] = iso.split('-');
+            return `${d}/${m}/${y}`;
         }
-      } catch (e) { /* ignore */ }
 
-      resetForOutput();
-
-      await new Promise(r => setTimeout(r, 300));
-      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-      const page = document.getElementById('sheetPage');
-      const canvas = await html2canvas(page, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        width: page.scrollWidth,
-        height: page.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: page.scrollWidth,
-        windowHeight: page.scrollHeight,
-        onclone: (clonedDoc) => {
-          const style = clonedDoc.createElement('style');
-          style.innerHTML = `
-            table.day-table, table.details-table { border: 2px solid #20629F !important; }
-            .editable, .arabic, span, div, td, th { font-weight: 400 !important; }
-            .title-arabic, .title-english, th, .row-label { font-weight: 700 !important; }
-          `;
-          clonedDoc.head.appendChild(style);
+        function readStore() {
+            try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; } catch (e) { console.error('read error', e); return {}; }
         }
-      });
+        function writeStore(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.error('write error', e); } }
 
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
-      const { jsPDF } = window.jspdf;
+                function isUserEntryField(el) {
+            return !!el && (
+                el.matches('.field-line.editable') ||
+                el.matches('.remarks-inline-line.editable') ||
+                el.matches('.reimb-box.editable')
+            );
+        }
+        function normalizeEditableText(el) {
+            if (!isUserEntryField(el)) return;
+            // Email addresses must remain lowercase; other user-entry fields stay uppercase.
+            if (el.id === 'f-email') return;
+            if (el.tagName === 'INPUT') el.value = el.value.toUpperCase();
+            else el.innerText = el.innerText.toUpperCase();
+        }
+        function saveField(el, normalize = true) {
+            if (normalize) normalizeEditableText(el);
+            const data = readStore();
+            data[el.id] = (el.tagName === 'INPUT') ? el.value : el.innerText;
+            writeStore(data);
+        }
 
-      const pdfWidthMm = 210;
-      const pdfHeightMm = 297;
+        function saveSignature(sigId, dataUrl) { const data = readStore(); data[sigId] = dataUrl; writeStore(data); }
+        function saveCheckbox(el) { const data = readStore(); data[el.id] = el.classList.contains('checked'); writeStore(data); }
 
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+        // Checkboxes
+        document.querySelectorAll('.chk[id]').forEach(el => {
+            el.addEventListener('click', () => {
+                const group = el.dataset.group;
+                if (group) {
+                    const wasChecked = el.classList.contains('checked');
+                    document.querySelectorAll(`.chk[data-group="${group}"]`).forEach(sibling => {
+                        sibling.classList.remove('checked');
+                        saveCheckbox(sibling);
+                    });
+                    if (!wasChecked) el.classList.add('checked');
+                    saveCheckbox(el);
+                } else {
+                    el.classList.toggle('checked');
+                    saveCheckbox(el);
+                }
+            });
+        });
 
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidthMm, pdfHeightMm);
-      pdf.save('AquaClean_Labour_Card.pdf');
-    } catch (err) {
-      console.error('PDF generation error', err);
-      alert('Sorry, something went wrong generating the PDF. Please try the Print button instead.');
-    } finally {
-      restoreAfterOutput();
-      btn.disabled = false;
-      btn.innerHTML = prevLabel;
+        // Signature widgets
+        document.querySelectorAll('.sig-wrap').forEach(wrap => {
+            const sigId = wrap.dataset.sigId;
+            const fileInput = wrap.querySelector('.sig-file-input');
+            const chooseBtn = wrap.querySelector('.sig-choose-btn');
+            const removeBtn = wrap.querySelector('.sig-remove-btn');
+            const img = wrap.querySelector('.sig-img');
+
+            chooseBtn.addEventListener('click', (e) => { e.stopPropagation(); fileInput.click(); });
+            wrap.addEventListener('click', (e) => {
+                if (!wrap.classList.contains('has-sig') && e.target !== chooseBtn && e.target !== removeBtn) fileInput.click();
+            });
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    img.src = evt.target.result;
+                    img.style.display = 'inline-block';
+                    wrap.classList.add('has-sig');
+                    saveSignature(sigId, evt.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                img.src = '';
+                img.style.display = 'none';
+                wrap.classList.remove('has-sig');
+                fileInput.value = '';
+                saveSignature(sigId, '');
+            });
+        });
+
+        // Load data
+        function loadData() {
+            const data = readStore();
+            document.querySelectorAll('.editable[id]:not(.date-display)').forEach(el => {
+                if (data[el.id] === undefined) return;
+                const value = (isUserEntryField(el) && el.id !== 'f-email') ? String(data[el.id]).toUpperCase() : data[el.id];
+                if (el.tagName === 'INPUT') el.value = value;
+                else el.innerText = value;
+            });
+            document.querySelectorAll('.date-overlay-input[id]').forEach(overlay => {
+                if (data[overlay.id] === undefined) return;
+                overlay.value = data[overlay.id];
+                const display = document.getElementById(overlay.id + '-display');
+                if (display) display.innerText = formatDateDisplay(overlay.value);
+            });
+            document.querySelectorAll('.chk[id]').forEach(el => {
+                if (data[el.id]) el.classList.add('checked');
+            });
+            document.querySelectorAll('.sig-wrap[data-sig-id]').forEach(wrap => {
+                const sigId = wrap.dataset.sigId;
+                const val = data[sigId];
+                if (!val) return;
+                const img = wrap.querySelector('.sig-img');
+                img.src = val;
+                img.style.display = 'inline-block';
+                wrap.classList.add('has-sig');
+            });
+        }
+
+        document.querySelectorAll('.field-line.editable, .remarks-inline-line.editable, .reimb-box.editable').forEach(el => {
+            // Save while typing without rewriting the DOM, so the cursor never jumps backward.
+            el.addEventListener('input', () => saveField(el, false));
+            el.addEventListener('blur', () => saveField(el, true));
+        });
+
+        document.querySelectorAll('.date-overlay-input[id]').forEach(overlay => {
+            const display = document.getElementById(overlay.id + '-display');
+            if (!display) return;
+            overlay.addEventListener('change', () => {
+                display.innerText = formatDateDisplay(overlay.value);
+                saveField(overlay);
+            });
+            overlay.addEventListener('click', () => {
+                if (typeof overlay.showPicker === 'function') { try { overlay.showPicker(); } catch (e) {} }
+            });
+            overlay.addEventListener('focus', () => {
+                if (typeof overlay.showPicker === 'function') { try { overlay.showPicker(); } catch (e) {} }
+            });
+        });
+
+        // Zoom
+        let isOutputMode = false;
+        let currentZoomPercent = 100;
+        function fitPage() {
+            if (isOutputMode) return;
+            const page = document.getElementById('sheetPage');
+            const wrapper = document.getElementById('pageWrapper');
+            page.style.zoom = 1;
+            const naturalWidth = page.offsetWidth;
+            const available = wrapper.clientWidth - 12;
+            let baseScale = 1;
+            if (available < naturalWidth) baseScale = available / naturalWidth;
+            page.style.zoom = baseScale * (currentZoomPercent / 100);
+            wrapper.style.height = 'auto';
+        }
+        function applyPageZoom(percent) { currentZoomPercent = percent; document.getElementById('pageZoomValue').innerText = percent + '%'; fitPage(); }
+        let resizeTimer = null;
+        function scheduleFitPage() { clearTimeout(resizeTimer); resizeTimer = setTimeout(fitPage, 100); }
+        window.addEventListener('resize', scheduleFitPage);
+        window.addEventListener('orientationchange', () => setTimeout(fitPage, 200));
+
+        // Print / PDF
+        function resetForOutput() {
+            isOutputMode = true;
+            const page = document.getElementById('sheetPage');
+            const wrapper = document.getElementById('pageWrapper');
+            page.style.zoom = 1;
+            page.style.margin = '0';
+            page.style.boxShadow = 'none';
+            wrapper.style.height = 'auto';
+            wrapper.style.overflow = 'visible';
+            wrapper.style.display = 'block';
+            document.querySelectorAll('.date-overlay-input, .toolbar, .site-footer').forEach(el => { el.style.display = 'none'; });
+        }
+        function restoreAfterOutput() {
+            isOutputMode = false;
+            const page = document.getElementById('sheetPage');
+            const wrapper = document.getElementById('pageWrapper');
+            page.style.margin = '10mm auto';
+            page.style.boxShadow = '';
+            wrapper.style.display = 'flex';
+            document.querySelectorAll('.date-overlay-input, .toolbar, .site-footer').forEach(el => { el.style.display = ''; });
+            fitPage();
+        }
+        function saveAllFields() {
+            const data = readStore();
+            document.querySelectorAll('.field-line.editable, .remarks-inline-line.editable, .reimb-box.editable').forEach(el => {
+                normalizeEditableText(el);
+                data[el.id] = el.tagName === 'INPUT' ? el.value : el.innerText;
+            });
+            document.querySelectorAll('.date-overlay-input[id]').forEach(el => { data[el.id] = el.value; });
+            document.querySelectorAll('.chk[id]').forEach(el => { data[el.id] = el.classList.contains('checked'); });
+            writeStore(data);
+        }
+        window.addEventListener('beforeunload', saveAllFields);
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveAllFields(); });
+
+        window.addEventListener('beforeprint', resetForOutput);
+        window.addEventListener('afterprint', restoreAfterOutput);
+
+        document.getElementById('btnPrint').addEventListener('click', () => {
+            document.title = 'AquaClean_Leave_Application';
+            saveAllFields();
+            window.print();
+            setTimeout(() => { document.title = 'Aqua Clean Leave Application Form'; }, 1000);
+        });
+
+        document.getElementById('btnSavePDF').addEventListener('click', async () => {
+            const btn = document.getElementById('btnSavePDF');
+            const previousLabel = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = 'Generating...';
+            try {
+                saveAllFields();
+                resetForOutput();
+                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                const page = document.getElementById('sheetPage');
+                const canvas = await html2canvas(page, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        const clonedPage = clonedDoc.getElementById('sheetPage');
+                        clonedPage.style.zoom = '1';
+                        clonedPage.style.margin = '0';
+                        clonedPage.style.width = '210mm';
+                        clonedPage.style.minHeight = '297mm';
+                        clonedPage.style.padding = '8mm 6mm';
+                        clonedDoc.activeElement?.blur();
+                        const clonedEmail = clonedDoc.getElementById('f-email');
+                        if (clonedEmail) {
+                            clonedEmail.style.background = 'transparent';
+                            clonedEmail.style.backgroundColor = 'transparent';
+                            clonedEmail.style.boxShadow = 'none';
+                            clonedEmail.style.outline = 'none';
+                            clonedEmail.style.color = '#000';
+                            clonedEmail.style.webkitTextFillColor = '#000';
+                            clonedEmail.style.textTransform = 'none';
+                        }
+                        clonedDoc.querySelectorAll('.toolbar, .site-footer, .date-overlay-input, .sig-hint, .sig-choose-btn, .sig-remove-btn, .sig-file-input').forEach(el => {
+                            el.style.display = 'none';
+                        });
+                    }
+                });
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+                const pageWidth = 210;
+                const pageHeight = 297;
+                const imageRatio = canvas.width / canvas.height;
+                const pageRatio = pageWidth / pageHeight;
+                let imageWidth = pageWidth;
+                let imageHeight = pageWidth / imageRatio;
+                if (imageHeight > pageHeight) {
+                    imageHeight = pageHeight;
+                    imageWidth = pageHeight * imageRatio;
+                }
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', (pageWidth - imageWidth) / 2, (pageHeight - imageHeight) / 2, imageWidth, imageHeight, undefined, 'FAST');
+                pdf.save('AquaClean_Leave_Application.pdf');
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('PDF generation failed. Please try again.');
+            } finally {
+                restoreAfterOutput();
+                btn.disabled = false;
+                btn.innerHTML = previousLabel;
+            }
+        });
+
+        // Toolbar menu
+        const toolbarOptions = document.getElementById('toolbarOptions');
+        document.getElementById('btnMenuToggle').addEventListener('click', (e) => { e.stopPropagation(); toolbarOptions.classList.toggle('open'); });
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('toolbarMenu').contains(e.target)) toolbarOptions.classList.remove('open');
+        });
+        toolbarOptions.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', () => toolbarOptions.classList.remove('open')); });
+        document.getElementById('pageZoomSlider').addEventListener('input', (e) => applyPageZoom(parseInt(e.target.value, 10)));
+
+        // Export / Import
+        document.getElementById('btnExport').addEventListener('click', () => {
+            const raw = localStorage.getItem(STORAGE_KEY) || '{}';
+            const blob = new Blob([raw], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'AquaClean_Leave_Application_Data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        const importFileInput = document.getElementById('importFileInput');
+        document.getElementById('btnImport').addEventListener('click', () => importFileInput.click());
+
+        document.getElementById('btnClearForm').addEventListener('click', () => {
+            const confirmed = window.confirm('Clear all entered form data, dates, checkboxes, and signatures?');
+            if (!confirmed) return;
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.reload();
+        });
+        importFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            e.target.value = '';
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+                    alert('Data imported. The page will now reload.');
+                    window.location.reload();
+                } catch (err) { alert('Invalid file. Please use a file exported from this form.'); }
+            };
+            reader.readAsText(file);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => { loadData(); fitPage(); });
+    </script>
+<!-- Final print parity override: preserve the existing on-screen form design. -->
+<style>
+@media print {
+    html, body { background: #fff !important; }
+    #pageWrapper { display: block !important; width: 100% !important; overflow: visible !important; }
+    .page {
+        width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 8mm 6mm !important;
+        zoom: 0.86 !important;
+        box-shadow: none !important;
     }
-  });
-
-  document.getElementById('logoImg').addEventListener('click', () => {
-    window.location.reload();
-  });
-
-  window.addEventListener('resize', scheduleFitPage);
-  window.addEventListener('orientationchange', () => setTimeout(fitPage, 200));
-  window.addEventListener('load', fitPage);
-  document.addEventListener('DOMContentLoaded', () => {
-    buildDayTable('dayTable1', 1, 16);
-    buildDayTable('dayTable2', 17, 31);
-    loadData();
-    wireEditableFields();
-    wireTotalCalculation();
-    recalcTotals();
-    fitPage();
-  });
-</script>
-
+    .form-box { margin-top: 4mm !important; padding: 4mm 5mm !important; }
+    .title-english { font-size: 20px !important; line-height: 1.3 !important; }
+    .title-sub { font-size: 16px !important; margin-top: 4px !important; }
+    .title-divider { width: calc(100% + 10mm) !important; margin: 4mm -5mm !important; border-top-width: 1px !important; }
+    .field-row { font-size: 12.5px !important; margin-bottom: 6px !important; }
+    .field-item { margin-right: 12px !important; }
+    .field-line { font-size: 12.5px !important; min-width: 150px !important; }
+    .field-line.short { min-width: 60px !important; }
+    .field-line.medium { min-width: 120px !important; }
+    .field-line.wide { min-width: 220px !important; }
+    .date-wrap { font-size: 12.5px !important; min-width: 100px !important; }
+    .subsection-title { font-size: 13px !important; margin: 0 0 3mm 0 !important; }
+    .note-text { font-size: 11px !important; margin: 2px 0 4px 0 !important; }
+    .remarks-inline-line { height: 18px !important; font-size: 12.5px !important; }
+    .sig-wrap { height: 55px !important; min-width: 180px !important; }
+    .sig-img { max-height: 48px !important; }
+    .reimb-box { font-size: 12.5px !important; min-width: 130px !important; }
+    .dist-block, .final-note { font-size: 11px !important; }
+    .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input { display: none !important; }
+}
+</style>
 </body>
 </html>
+
+<!-- Full-size A4 form fit: preserve readable typography and columns, reduce only vertical gaps. -->
+<style>
+@media print {
+    .page { zoom: 1 !important; }
+    .form-box { margin-top: 2mm !important; padding-top: 3mm !important; padding-bottom: 3mm !important; }
+    .title-divider { margin-top: 2mm !important; margin-bottom: 2mm !important; }
+    .field-row { margin-bottom: 3px !important; }
+    .subsection-title { margin-top: 0 !important; margin-bottom: 1.5mm !important; }
+    .note-text { margin-top: 1px !important; margin-bottom: 2px !important; }
+    .section-divider, .leave-signature-divider, .official-use-divider, .document-services-divider { margin-top: .5mm !important; margin-bottom: .5mm !important; }
+    .sig-wrap { height: 42px !important; }
+    .sig-img { max-height: 38px !important; }
+    .remarks-inline-line { height: 16px !important; }
+    .dist-block { margin-top: 1mm !important; }
+    .final-note { margin-top: 1mm !important; }
+}
+</style>
+
+<!-- Unified form typography: leave-type labels use the same body text size as every other field row. -->
+<style>
+/* Keep the form typography consistent on screen. */
+.form-box .field-row,
+.form-box .field-row .label,
+.form-box .field-row .chk-item,
+.form-box .field-row .chk-item .editable,
+.form-box .field-row .row-left,
+.form-box .field-row .row-right {
+    font-size: 12.5px !important;
+    line-height: 16px !important;
+}
+.form-box .leave-options-row,
+.form-box .leave-options-row .leave-options,
+.form-box .leave-options-row .chk-item,
+.form-box .leave-options-row .chk-item .editable {
+    font-size: 12.5px !important;
+    line-height: 16px !important;
+}
+@media print {
+    .form-box .field-row,
+    .form-box .field-row .label,
+    .form-box .field-row .chk-item,
+    .form-box .field-row .chk-item .editable,
+    .form-box .field-row .row-left,
+    .form-box .field-row .row-right,
+    .form-box .leave-options-row,
+    .form-box .leave-options-row .leave-options,
+    .form-box .leave-options-row .chk-item,
+    .form-box .leave-options-row .chk-item .editable {
+        font-size: 12.5px !important;
+        line-height: 16px !important;
+    }
+}
+</style>
+
+<!-- Final requested polish: bold reimbursement label and lighter section dividers. -->
+<style>
+.form-box .reimb-label,
+.form-box #f-lbl-reimb {
+    font-weight: 700 !important;
+}
+.form-box .section-divider,
+.form-box .leave-signature-divider,
+.form-box .official-use-divider,
+.form-box .document-services-divider {
+    border-top-width: 1px !important;
+    border-top-style: solid !important;
+    border-top-color: #938686 !important;
+}
+@media print {
+    .form-box .reimb-label,
+    .form-box #f-lbl-reimb {
+        font-weight: 700 !important;
+    }
+    .form-box .section-divider,
+    .form-box .leave-signature-divider,
+    .form-box .official-use-divider,
+    .form-box .document-services-divider {
+        border-top-width: 1px !important;
+        border-top-style: solid !important;
+        border-top-color: #938686 !important;
+    }
+}
+</style>
+
+<!-- Final line refinement: medium-light dividers and compact editable field lines. -->
+<style>
+.form-box .section-divider,
+.form-box .leave-signature-divider,
+.form-box .official-use-divider,
+.form-box .document-services-divider {
+    border-top-width: 1.25px !important;
+}
+.form-box .field-line.editable,
+.form-box .date-wrap,
+.form-box .remarks-inline-line.editable,
+.form-box .reimb-box.editable {
+    border-bottom-width: 1px !important;
+    border-bottom-style: dotted !important;
+    border-bottom-color: #000 !important;
+    line-height: 14px !important;
+    padding-bottom: 0 !important;
+}
+.form-box .field-line.editable {
+    min-height: 15px !important;
+}
+.form-box .date-wrap {
+    min-height: 15px !important;
+}
+.form-box .remarks-inline-line.editable {
+    height: 15px !important;
+}
+.form-box .reimb-box.editable {
+    line-height: 14px !important;
+}
+@media print {
+    .form-box .section-divider,
+    .form-box .leave-signature-divider,
+    .form-box .official-use-divider,
+    .form-box .document-services-divider {
+        border-top-width: 1.25px !important;
+    }
+    .form-box .field-line.editable,
+    .form-box .date-wrap,
+    .form-box .remarks-inline-line.editable,
+    .form-box .reimb-box.editable {
+        border-bottom-width: 1px !important;
+        line-height: 14px !important;
+        padding-bottom: 0 !important;
+    }
+}
+</style>
+
+<!-- Final correction: solid reimbursement box and single clean divider strokes. -->
+<style>
+.form-box .reimb-box.editable,
+.form-box #f-reimb {
+    border: 1.5px solid #000 !important;
+    border-bottom: 1.5px solid #000 !important;
+    min-height: 20px !important;
+    height: 20px !important;
+    line-height: 14px !important;
+    vertical-align: bottom !important;
+}
+.form-box .section-divider,
+.form-box .leave-signature-divider,
+.form-box .official-use-divider,
+.form-box .document-services-divider {
+    display: block !important;
+    height: 0 !important;
+    border: 0 !important;
+    border-top: 1.25px solid #938686 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+@media print {
+    .form-box .reimb-box.editable,
+    .form-box #f-reimb {
+        border: 1.5px solid #000 !important;
+        border-bottom: 1.5px solid #000 !important;
+        height: 20px !important;
+        min-height: 20px !important;
+    }
+    .form-box .section-divider,
+    .form-box .leave-signature-divider,
+    .form-box .official-use-divider,
+    .form-box .document-services-divider {
+        height: 0 !important;
+        border: 0 !important;
+        border-top: 1.25px solid #938686 !important;
+        border-bottom: 0 !important;
+        box-shadow: none !important;
+    }
+}
+</style>
+
+<!-- Hide signature helper text from printed and downloaded form output only. -->
+<style>
+@media print {
+    .form-box .sig-hint,
+    .form-box .sig-wrap .sig-hint {
+        display: none !important;
+        visibility: hidden !important;
+    }
+}
+</style>
+
+<!-- Final email and reimbursement polish. -->
+<style>
+.form-box #f-email,
+.form-box #f-email.editable {
+    text-transform: none !important;
+    font-style: normal !important;
+}
+.form-box #f-lbl-reimb {
+    margin-right: 6px !important;
+}
+.form-box #f-reimb,
+.form-box .reimb-box.editable {
+    border: 1.5px solid #000000 !important;
+    border-color: #000000 !important;
+    border-style: solid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+@media print {
+    .form-box #f-email,
+    .form-box #f-email.editable {
+        text-transform: none !important;
+        font-style: normal !important;
+    }
+    .form-box #f-lbl-reimb {
+        margin-right: 6px !important;
+    }
+    .form-box #f-reimb,
+    .form-box .reimb-box.editable {
+        border: 1.5px solid #000000 !important;
+        border-color: #000000 !important;
+        border-style: solid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+</style>
+
+<!-- Final output correction for reimbursement and Email ID rendering. -->
+<style>
+.form-box #f-lbl-reimb,
+.form-box .reimb-label {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    vertical-align: bottom !important;
+}
+.form-box #f-reimb,
+.form-box .reimb-box.editable {
+    display: inline-block !important;
+    margin-left: 6px !important;
+    background: #fff !important;
+    color: #000 !important;
+    border: 1.5px solid #000 !important;
+    border-color: #000 !important;
+    border-style: solid !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+.form-box #f-email,
+.form-box input#f-email {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #000 !important;
+    border: none !important;
+    border-bottom: 1px dotted #000 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    opacity: 1 !important;
+    text-transform: none !important;
+    font-style: normal !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+@media print {
+    .form-box #f-lbl-reimb,
+    .form-box .reimb-label {
+        display: inline-block !important;
+        white-space: nowrap !important;
+    }
+    .form-box #f-reimb,
+    .form-box .reimb-box.editable {
+        margin-left: 6px !important;
+        background: #fff !important;
+        color: #000 !important;
+        border: 1.5px solid #000 !important;
+        border-color: #000 !important;
+        border-style: solid !important;
+        box-shadow: none !important;
+    }
+    .form-box #f-email,
+    .form-box input#f-email {
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #000 !important;
+        border: none !important;
+        border-bottom: 1px dotted #000 !important;
+        box-shadow: none !important;
+        text-transform: none !important;
+        font-style: normal !important;
+    }
+}
+</style>
+
+<!-- Final output colors: Email ID and reimbursement are solid black. -->
+<style>
+@media print {
+    .form-box #f-email,
+    .form-box #f-email.editable,
+    .form-box #f-lbl-reimb,
+    .form-box .reimb-label,
+    .form-box #f-reimb,
+    .form-box .reimb-box.editable {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        opacity: 1 !important;
+    }
+    .form-box #f-reimb,
+    .form-box .reimb-box.editable {
+        background: #ffffff !important;
+        border-color: #000000 !important;
+    }
+}
+</style>
+
+<!-- Final print geometry correction: centered full A4 form with clean unfocused fields. -->
+<style>
+@media print {
+    @page { size: A4 portrait; margin: 0 !important; }
+    html, body {
+        width: 210mm !important;
+        min-width: 210mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        overflow: visible !important;
+    }
+    #pageWrapper {
+        display: block !important;
+        width: 210mm !important;
+        min-width: 210mm !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+    #sheetPage {
+        display: block !important;
+        width: 210mm !important;
+        min-width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 8mm 6mm !important;
+        zoom: 1 !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+    #sheetPage .form-box {
+        width: 100% !important;
+        max-width: none !important;
+        box-sizing: border-box !important;
+    }
+    #sheetPage #f-email,
+    #sheetPage input#f-email,
+    #sheetPage #f-email:focus {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+        border-top: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+        border-bottom: 1px dotted #000 !important;
+        text-transform: none !important;
+    }
+    #sheetPage #f-reimb,
+    #sheetPage .reimb-box.editable {
+        background: #fff !important;
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+        border: 1.5px solid #000 !important;
+        box-shadow: none !important;
+    }
+}
+</style>
