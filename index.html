@@ -420,7 +420,66 @@
             .chk.checked::after { display: block !important; visibility: visible !important; color: #000 !important; }
         }
     </style>
-    </head>
+    
+<style>
+/* Mobile editing layout only. Print and Save as PDF keep the A4 rules above. */
+@media screen and (max-width: 700px) {
+    html, body { background:#e5e5e5; overflow-x:hidden; }
+    #pageWrapper { display:block; width:100%; overflow-x:hidden; }
+    #sheetPage, .page {
+        width:100% !important;
+        min-width:0 !important;
+        min-height:0 !important;
+        margin:0 !important;
+        padding:12px 10px 80px !important;
+        zoom:1 !important;
+        overflow:visible !important;
+    }
+    .form-box { width:100% !important; margin-top:10px !important; padding:12px 10px !important; }
+    .title-english { font-size:clamp(16px, 5vw, 20px) !important; line-height:1.25 !important; }
+    .title-sub { font-size:clamp(13px, 4vw, 16px) !important; }
+    .title-divider { margin:10px -10px !important; }
+    .field-row, .field-row.single-col { display:block !important; width:100% !important; font-size:13px !important; line-height:18px !important; margin-bottom:8px !important; }
+    .row-left, .row-right { display:block !important; width:100% !important; padding-left:0 !important; white-space:normal !important; }
+    .row-right { margin-top:6px; }
+    .field-item { display:inline-flex !important; align-items:baseline; max-width:100%; margin:0 8px 5px 0 !important; white-space:normal !important; }
+    .label { white-space:nowrap; }
+    .field-line { min-width:95px !important; max-width:calc(100vw - 150px) !important; font-size:13px !important; }
+    .field-line.wide { min-width:150px !important; max-width:calc(100vw - 80px) !important; }
+    .field-line.medium { min-width:110px !important; }
+    .date-wrap { min-width:95px !important; max-width:calc(100vw - 150px) !important; }
+    .leave-options-row { width:100% !important; overflow:visible !important; }
+    .leave-options-row .leave-options { display:flex !important; flex-wrap:wrap !important; width:100% !important; justify-content:flex-start !important; gap:7px 12px !important; }
+    .leave-options-row .chk-item { display:inline-flex !important; align-items:center; margin:0 !important; font-size:13px !important; line-height:18px !important; }
+    .leave-options-row .chk { flex:0 0 auto; width:16px !important; height:16px !important; }
+    .remarks-inline-line, .remarks-line { width:100% !important; min-height:24px !important; }
+    .sig-wrap { min-width:140px !important; max-width:55vw !important; height:42px !important; }
+    .dist-block, .final-note { font-size:10px !important; }
+    .toolbar { left:10px !important; bottom:10px !important; }
+    .toolbar-options { max-width:calc(100vw - 20px) !important; }
+    .toolbar > button, .toolbar-options button { font-size:12px !important; padding:8px 11px !important; }
+    .toolbar-options #pageZoomControl { max-width:calc(100vw - 40px); }
+    .menu-icon { font-size:16px; line-height:1; }
+    /* Keep every divider and field inside the mobile form border. */
+    #sheetPage, .page, .form-box { max-width:100% !important; overflow-x:hidden !important; }
+    .form-box hr.title-divider,
+    .form-box .section-divider,
+    .form-box .leave-signature-divider,
+    .form-box .official-use-divider,
+    .form-box .document-services-divider {
+        width:100% !important;
+        max-width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        box-sizing:border-box !important;
+    }
+    .field-row, .row-left, .row-right, .field-item { min-width:0 !important; max-width:100% !important; overflow:visible !important; }
+    .field-line, input.field-line, .date-wrap { min-width:0 !important; width:auto !important; max-width:100% !important; }
+    .row-right .field-item, .row-left .field-item { display:flex !important; flex-wrap:wrap !important; align-items:baseline !important; }
+    .row-right .field-line, .row-left .field-line { flex:1 1 100px !important; }
+}
+</style>
+</head>
 <body class="notranslate" translate="no">
 
     <div id="pageWrapper">
@@ -687,7 +746,7 @@
                 <span id="pageZoomValue" style="min-width:34px; text-align:right;">100%</span>
             </div>
         </div>
-        <button id="btnMenuToggle">☰ Menu</button>
+        <button id="btnMenuToggle" aria-label="Open menu"><span class="menu-icon" aria-hidden="true">☰</span><span>Menu</span></button>
         <input type="file" id="importFileInput" accept="application/json" style="display:none;">
     </div>
 
