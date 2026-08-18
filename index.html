@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr" translate="no">
 <head>
@@ -379,6 +380,8 @@
             }
         }
     </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
 <body class="notranslate" translate="no">
 
@@ -851,7 +854,8 @@
         window.addEventListener('beforeprint', resetForOutput);
         window.addEventListener('afterprint', restoreAfterOutput);
 
-        document.getElementById('btnPrint').addEventListener('click', () => {
+        document.getElementById('btnPrint').addEventListener('click', async () => {
+            try { await document.fonts.ready; } catch (e) {}
             document.title = 'AquaClean_Leave_Application';
             saveAllFields();
             window.print();
@@ -864,52 +868,62 @@
             btn.disabled = true;
             btn.innerHTML = 'Generating...';
             try {
+                try { await document.fonts.ready; } catch (e) {}
                 saveAllFields();
                 resetForOutput();
+                await new Promise(resolve => setTimeout(resolve, 300));
                 await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
                 const page = document.getElementById('sheetPage');
                 const canvas = await html2canvas(page, {
-                    scale: 2,
-                    backgroundColor: '#ffffff',
+                    scale: 4,
                     useCORS: true,
+                    backgroundColor: '#ffffff',
                     logging: false,
+                    width: page.scrollWidth,
+                    height: page.scrollHeight,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: page.scrollWidth,
+                    windowHeight: page.scrollHeight,
                     onclone: (clonedDoc) => {
-                        const clonedPage = clonedDoc.getElementById('sheetPage');
-                        clonedPage.style.zoom = '1';
-                        clonedPage.style.margin = '0';
-                        clonedPage.style.width = '210mm';
-                        clonedPage.style.minHeight = '297mm';
-                        clonedPage.style.padding = '8mm 6mm';
+                        const style = clonedDoc.createElement('style');
+                        style.innerHTML = `
+                            html, body { background:#fff !important; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+                            #pageWrapper { display:block !important; width:210mm !important; min-width:210mm !important; margin:0 auto !important; padding:0 !important; overflow:visible !important; }
+                            #sheetPage, .page { display:block !important; width:210mm !important; min-width:210mm !important; min-height:297mm !important; margin:0 !important; padding:8mm 6mm !important; zoom:1 !important; transform:none !important; box-sizing:border-box !important; overflow:visible !important; box-shadow:none !important; }
+                            #sheetPage .form-box { width:100% !important; max-width:none !important; box-sizing:border-box !important; margin-top:2mm !important; padding:3mm 5mm !important; }
+                            .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input, .sig-hint { display:none !important; }
+                            .title-english { font-size:20px !important; line-height:1.3 !important; }
+                            .title-sub { font-size:16px !important; margin-top:4px !important; }
+                            .field-row { font-size:12.5px !important; line-height:16px !important; margin-bottom:3px !important; }
+                            .field-row .label, .field-row .chk-item, .field-row .row-left, .field-row .row-right { font-size:12.5px !important; line-height:16px !important; }
+                            .field-item { margin-right:12px !important; }
+                            .field-line { font-size:12.5px !important; min-width:150px !important; }
+                            .field-line.short { min-width:60px !important; }
+                            .field-line.medium { min-width:120px !important; }
+                            .field-line.wide { min-width:220px !important; }
+                            .date-wrap { font-size:12.5px !important; min-width:100px !important; }
+                            .subsection-title { font-size:13px !important; margin:0 0 1.5mm 0 !important; }
+                            .note-text { font-size:11px !important; margin:1px 0 2px 0 !important; }
+                            .leave-options-row, .leave-options-row .leave-options, .leave-options-row .chk-item { font-size:12.5px !important; line-height:16px !important; }
+                            .remarks-inline-line { height:16px !important; font-size:12.5px !important; }
+                            .sig-wrap { height:42px !important; min-width:180px !important; }
+                            .sig-img { max-height:38px !important; }
+                            .reimb-box { font-size:12.5px !important; min-width:130px !important; }
+                            .editable { color:#000 !important; }
+                            .form-box .reimb-label, .form-box #f-lbl-reimb { font-weight:700 !important; }
+                            .form-box .section-divider, .form-box .leave-signature-divider, .form-box .official-use-divider, .form-box .document-services-divider { display:block !important; height:0 !important; border:0 !important; border-top:1.25px solid #938686 !important; border-bottom:0 !important; box-shadow:none !important; background:transparent !important; margin-top:.5mm !important; margin-bottom:.5mm !important; }
+                            #f-email, input#f-email { background:transparent !important; color:#000 !important; -webkit-text-fill-color:#000 !important; border:0 !important; border-bottom:1px dotted #000 !important; box-shadow:none !important; outline:none !important; }
+                            #f-reimb, .reimb-box.editable { background:#fff !important; color:#000 !important; -webkit-text-fill-color:#000 !important; border:1.5px solid #000 !important; box-shadow:none !important; }
+                        `;
+                        clonedDoc.head.appendChild(style);
                         clonedDoc.activeElement?.blur();
-                        const clonedEmail = clonedDoc.getElementById('f-email');
-                        if (clonedEmail) {
-                            clonedEmail.style.background = 'transparent';
-                            clonedEmail.style.backgroundColor = 'transparent';
-                            clonedEmail.style.boxShadow = 'none';
-                            clonedEmail.style.outline = 'none';
-                            clonedEmail.style.color = '#000';
-                            clonedEmail.style.webkitTextFillColor = '#000';
-                            clonedEmail.style.textTransform = 'none';
-                        }
-                        clonedDoc.querySelectorAll('.toolbar, .site-footer, .date-overlay-input, .sig-hint, .sig-choose-btn, .sig-remove-btn, .sig-file-input').forEach(el => {
-                            el.style.display = 'none';
-                        });
                     }
                 });
                 const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
-                const pageWidth = 210;
-                const pageHeight = 297;
-                const imageRatio = canvas.width / canvas.height;
-                const pageRatio = pageWidth / pageHeight;
-                let imageWidth = pageWidth;
-                let imageHeight = pageWidth / imageRatio;
-                if (imageHeight > pageHeight) {
-                    imageHeight = pageHeight;
-                    imageWidth = pageHeight * imageRatio;
-                }
+                const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4', compress:true });
                 const imgData = canvas.toDataURL('image/png');
-                pdf.addImage(imgData, 'PNG', (pageWidth - imageWidth) / 2, (pageHeight - imageHeight) / 2, imageWidth, imageHeight, undefined, 'FAST');
+                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
                 pdf.save('AquaClean_Leave_Application.pdf');
             } catch (error) {
                 console.error('PDF generation error:', error);
