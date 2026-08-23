@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Aqua Clean Leave Application Form - Fill, Print & Save as PDF</title>
+    <title>Aqua Clean Leave Application Form</title>
     <meta name="description" content="Fill out the Aqua Clean Building Services Company LLC Leave Application Form online, then print it or save it as a PDF. Free, editable, and works on any device.">
     <meta name="keywords" content="leave application form, employee leave form, annual leave form, emergency leave form, resignation leave form, Qatar leave application, printable leave form">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -988,7 +988,7 @@
                             html, body { background:#fff !important; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
                             #pageWrapper { display:block !important; width:210mm !important; min-width:210mm !important; margin:0 auto !important; padding:0 !important; overflow:visible !important; }
                             #sheetPage, .page { display:block !important; width:210mm !important; min-width:210mm !important; min-height:297mm !important; margin:0 !important; padding:8mm 6mm !important; zoom:1 !important; transform:none !important; box-sizing:border-box !important; overflow:visible !important; box-shadow:none !important; }
-                            #sheetPage .form-box { width:100% !important; max-width:none !important; box-sizing:border-box !important; margin-top:2mm !important; padding:3mm 5mm !important; }
+                            #sheetPage .form-box { width:100% !important; max-width:none !important; box-sizing:border-box !important; margin-top:2mm !important; padding:3mm 5mm !important; transform:scaleY(1.08) !important; transform-origin:top center !important; }
                             .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input, .sig-hint { display:none !important; }
                             .title-english { font-size:20px !important; line-height:1.3 !important; }
                             .title-sub { font-size:16px !important; margin-top:4px !important; }
@@ -1508,6 +1508,34 @@
         -webkit-text-fill-color: #000 !important;
         border: 1.5px solid #000 !important;
         box-shadow: none !important;
+    }
+}
+</style>
+
+<!-- Minimal A4 print-fit correction only. -->
+<style>
+@media print {
+    @page { size: A4 portrait; margin: 0; }
+    html, body { width: 210mm !important; height: 297mm !important; }
+    #pageWrapper { width: 210mm !important; min-height: 297mm !important; }
+    #sheetPage {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+}
+</style>
+</html>
+
+<!-- Final output-only full-page fit: stretch the form vertically to use the A4 sheet. -->
+<style>
+@media print {
+    #sheetPage .form-box {
+        transform: scaleY(1.08) !important;
+        transform-origin: top center !important;
     }
 }
 </style>
