@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr" translate="no">
 <head>
@@ -129,13 +128,20 @@
 
         /* === CHECKBOXES (Thick, perfect sharp tick) === */
         .chk-item { display: inline-block; margin-right: 12px; white-space: nowrap; font-weight: 400; }
-        .chk { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #000000; border-radius: 2px; vertical-align: middle; cursor: pointer; position: relative; flex-shrink: 0; margin-left: 3px; }
-        .chk.checked {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 L6.8 12 L13 3.5' fill='none' stroke='%23000000' stroke-width='3.8' stroke-linecap='square' stroke-linejoin='miter'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 85% 85%;
+        .chk { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #000000; border-radius: 2px; vertical-align: middle; cursor: pointer; position: relative; flex-shrink: 0; margin-left: 3px; overflow: visible; }
+        .chk-tick-img {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 82%;
+            height: auto;
+            pointer-events: none;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
+        .chk.checked .chk-tick-img { display: block; }
 
         /* === REMARKS (Two lines) === */
         .remarks-line { border-bottom: 1.5px dotted #000000; min-height: 24px; font-size: 12.5px; color: #000000; padding: 2px; margin-bottom: 6px; }
@@ -398,28 +404,7 @@
 <meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
 <meta name='google-adsense-platform-domain' content='blogspot.com'/>
 
-    <style>
-        /* Reliable tick marks in screen, browser print, and html2canvas PDF output. */
-        .chk.checked { background-image: none !important; }
-        .chk.checked::after {
-            content: "✓";
-            position: absolute;
-            left: 50%; top: 50%;
-            transform: translate(-50%, -56%);
-            color: #000 !important;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 16px;
-            font-weight: 900;
-            line-height: 1;
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-        @media print {
-            .chk.checked { background-image: none !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .chk.checked::after { display: block !important; visibility: visible !important; color: #000 !important; }
-        }
-    </style>
+
     
 <style>
 /* Mobile editing layout only. Print and Save as PDF keep the A4 rules above. */
@@ -480,6 +465,357 @@
     .row-right .field-line, .row-left .field-line { flex:1 1 100px !important; }
 }
 </style>
+<!-- Final requested underline style: round period-style dots for editable field lines only. -->
+<style>
+.form-box .field-line.editable,
+.form-box .date-wrap,
+.form-box .remarks-inline-line.editable {
+    border-bottom: 0 !important;
+    border-bottom-width: 0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='18' viewBox='0 0 8 18'%3E%3Ctext x='0' y='16' font-family='Times New Roman,serif' font-size='15' fill='%23000000'%3E.%3C/text%3E%3C/svg%3E") !important;
+    background-repeat: repeat-x !important;
+    background-position: left bottom !important;
+    background-size: 8px 100% !important;
+}
+</style>
+
+<!-- Employee-section alignment correction: match the supplied reference image only. -->
+<style>
+.employee-field-row {
+    table-layout: fixed !important;
+}
+.employee-field-row > .row-left {
+    width: 68% !important;
+}
+.employee-field-row > .row-right {
+    width: 32% !important;
+    padding-left: 16px !important;
+}
+.employee-field-row .field-item.grow {
+    width: 100% !important;
+}
+.employee-field-row .field-item.grow .field-line.wide {
+    width: auto !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+}
+#f-name {
+    display: inline-block !important;
+    width: calc(100% - 52px) !important;
+    min-width: 0 !important;
+}
+#f-empno {
+    width: 175px !important;
+    min-width: 175px !important;
+}
+@media screen and (max-width: 700px) {
+    .employee-field-row {
+        table-layout: auto !important;
+    }
+    .employee-field-row > .row-left,
+    .employee-field-row > .row-right {
+        width: 100% !important;
+    }
+    #f-name, #f-empno {
+        width: auto !important;
+        min-width: 0 !important;
+    }
+}
+</style>
+<!-- Final A4 output fit: fill unused vertical page space in print and Save as PDF only. -->
+<style>
+@media print {
+    #sheetPage .form-box {
+        transform: translateY(-4px) scaleY(1.08) !important;
+        transform-origin: top center !important;
+    }
+}
+</style>
+<!-- Final employee-row spacing and border containment correction only. -->
+<style>
+.form-box {
+    overflow: hidden !important;
+}
+.employee-field-row {
+    overflow: hidden !important;
+}
+.employee-field-row:has(#f-lbl-gender) > .row-left > .field-item:first-child {
+    margin-right: 28px !important;
+}
+.employee-field-row:has(#f-lbl-dept) > .row-left > .field-item {
+    margin-right: 18px !important;
+}
+.employee-field-row > .row-left,
+.employee-field-row > .row-right {
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+.employee-field-row .field-line,
+.employee-field-row .date-wrap,
+.employee-field-row .remarks-inline-line,
+.employee-field-row .sig-wrap,
+.employee-field-row #f-email {
+    max-width: 100% !important;
+}
+@media screen and (max-width: 700px) {
+    .employee-field-row:has(#f-lbl-gender) > .row-left > .field-item:first-child,
+    .employee-field-row:has(#f-lbl-dept) > .row-left > .field-item {
+        margin-right: 8px !important;
+    }
+}
+</style>
+<!-- Final employee-field width and Gender checkbox visibility correction only. -->
+<style>
+/* Extend the right-side editor lines to the available column width. */
+.employee-field-row:has(#f-lbl-salary) .row-right .field-line,
+.employee-field-row:has(#f-lbl-nodays) .row-right .field-line {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+.employee-field-row:has(#f-lbl-salary) .row-right .field-item,
+.employee-field-row:has(#f-lbl-nodays) .row-right .field-item {
+    display: flex !important;
+    align-items: baseline !important;
+    width: 100% !important;
+}
+/* Make Occupation and QID Expiry editor areas slightly wider. */
+#f-occ {
+    width: 175px !important;
+    min-width: 175px !important;
+}
+.employee-field-row:has(#f-lbl-qid) .date-wrap {
+    width: 145px !important;
+    min-width: 145px !important;
+}
+/* Keep the Gender checkbox border fully visible above the underline. */
+.employee-field-row:has(#f-lbl-gender) {
+    overflow: visible !important;
+}
+#f-chk-gender-m,
+#f-chk-gender-f {
+    position: relative !important;
+    z-index: 3 !important;
+    transform: none !important;
+    background: #fff !important;
+    border: 1.5px solid #000 !important;
+    flex: 0 0 auto !important;
+}
+@media screen and (max-width: 700px) {
+    #f-occ { width: auto !important; min-width: 0 !important; }
+    .employee-field-row:has(#f-lbl-qid) .date-wrap { width: auto !important; min-width: 0 !important; }
+    .employee-field-row:has(#f-lbl-salary) .row-right .field-item,
+    .employee-field-row:has(#f-lbl-nodays) .row-right .field-item { display: inline-flex !important; width: auto !important; }
+}
+</style>
+<!-- Final equal-width correction for Home country contact and returned-leave fields only. -->
+<style>
+#f-homecontact,
+.employee-field-row:has(#f-lbl-returned) .date-wrap {
+    width: 220px !important;
+    min-width: 220px !important;
+}
+@media screen and (max-width: 700px) {
+    #f-homecontact,
+    .employee-field-row:has(#f-lbl-returned) .date-wrap {
+        width: auto !important;
+        min-width: 0 !important;
+    }
+}
+</style>
+<!-- Ensure the Distribution line remains visible in output only. -->
+<style>
+#f-lbl-dist {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    white-space: nowrap !important;
+}
+@media print {
+    #f-lbl-dist {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #000 !important;
+    }
+}
+</style>
+<!-- Final Distribution block visibility and spacing correction only. -->
+<style>
+.dist-block {
+    display: block !important;
+    height: auto !important;
+    min-height: 48px !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 2 !important;
+    line-height: 1.25 !important;
+}
+.dist-block .editable,
+.dist-block #f-lbl-dist,
+.dist-block #f-lbl-dist2,
+.dist-block #f-lbl-dist3,
+.dist-block #f-lbl-dist4 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 14px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    line-height: 1.25 !important;
+    margin-bottom: 2px !important;
+}
+@media print {
+    .dist-block {
+        display: block !important;
+        height: auto !important;
+        min-height: 48px !important;
+        overflow: visible !important;
+        line-height: 1.25 !important;
+    }
+    .dist-block .editable,
+    .dist-block #f-lbl-dist,
+    .dist-block #f-lbl-dist2,
+    .dist-block #f-lbl-dist3,
+    .dist-block #f-lbl-dist4 {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        min-height: 14px !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        color: #000 !important;
+        line-height: 1.25 !important;
+        margin-bottom: 2px !important;
+    }
+}
+</style>
+<!-- Final visibility correction for the three requested Distribution/footer lines only. -->
+<style>
+#f-lbl-dist3,
+#f-lbl-dist4,
+#f-final-note {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10 !important;
+    height: auto !important;
+    min-height: 14px !important;
+    overflow: visible !important;
+    color: #000 !important;
+}
+@media print {
+    #f-lbl-dist3,
+    #f-lbl-dist4,
+    #f-final-note {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 10 !important;
+        height: auto !important;
+        min-height: 14px !important;
+        overflow: visible !important;
+        color: #000 !important;
+    }
+}
+</style>
+<!-- Final mobile date underline and mobile PDF lower-content correction only. -->
+<style>
+@media screen and (max-width: 700px) {
+    .date-wrap {
+        min-width: 150px !important;
+        width: 150px !important;
+        min-height: 22px !important;
+        height: 22px !important;
+    }
+    .date-display {
+        font-size: 14px !important;
+        line-height: 20px !important;
+        min-height: 20px !important;
+    }
+}
+</style>
+<!-- Final mobile website date underline visibility correction only. -->
+<style>
+@media screen and (max-width: 700px) {
+    .date-wrap {
+        width: 190px !important;
+        min-width: 190px !important;
+        height: 26px !important;
+        min-height: 26px !important;
+        padding-bottom: 2px !important;
+    }
+    .date-display {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 24px !important;
+        min-height: 24px !important;
+        font-size: 16px !important;
+        line-height: 24px !important;
+    }
+}
+</style>
+<!-- Final Employee-section mobile date-picker line correction only. -->
+<style>
+@media screen and (max-width: 700px) {
+    .employee-field-row .date-wrap {
+        width: 200px !important;
+        min-width: 200px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding-bottom: 2px !important;
+    }
+    .employee-field-row .date-display {
+        width: 100% !important;
+        height: 26px !important;
+        min-height: 26px !important;
+        font-size: 16px !important;
+        line-height: 26px !important;
+    }
+}
+</style>
+<!-- Final targeted mobile correction for QID Expiry and Date returned from last leave only. -->
+<style>
+@media screen and (max-width: 700px) {
+    .employee-field-row:has(#f-lbl-qid) .date-wrap,
+    .employee-field-row:has(#f-lbl-returned) .date-wrap {
+        width: 230px !important;
+        min-width: 230px !important;
+        height: 30px !important;
+        min-height: 30px !important;
+    }
+    .employee-field-row:has(#f-lbl-qid) .date-display,
+    .employee-field-row:has(#f-lbl-returned) .date-display {
+        width: 100% !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        font-size: 17px !important;
+        line-height: 28px !important;
+    }
+}
+</style>
+<!-- Final print/PDF date text-size correction only. -->
+<style>
+@media print {
+    .date-display,
+    .date-wrap .date-display {
+        font-size: 12.5px !important;
+        line-height: 16px !important;
+    }
+}
+</style>
+<!-- Final Save as PDF date baseline correction only. -->
+<style>
+@media print {
+    .date-wrap .date-display {
+        vertical-align: bottom !important;
+        transform: translateY(3px) !important;
+    }
+}
+</style>
 </head>
 <body class="notranslate" translate="no">
 
@@ -497,12 +833,12 @@
                 <!-- ====== EMPLOYEE SECTION ====== -->
                 <div class="subsection-title editable" id="f-sec-emp" contenteditable="true">(To be completed by the Employee)</div>
 
-                <div class="field-row">
+                <div class="field-row employee-field-row">
                     <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-name" contenteditable="true">Name</span><span class="field-line wide editable" id="f-name" contenteditable="true"></span></span></span>
                     <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-empno" contenteditable="true">Employee No</span><span class="field-line medium editable" id="f-empno" contenteditable="true"></span></span></span>
                 </div>
 
-                <div class="field-row">
+                <div class="field-row employee-field-row">
                     <span class="row-left">
                         <span class="field-item"><span class="label editable" id="f-lbl-gender" contenteditable="true">Gender</span><span class="chk-item"><span class="editable" id="f-lbl-m" contenteditable="true">M</span><span class="chk" id="f-chk-gender-m" data-group="gender"></span></span><span class="chk-item"><span class="editable" id="f-lbl-f" contenteditable="true">F</span><span class="chk" id="f-chk-gender-f" data-group="gender"></span></span></span>
                         <span class="field-item"><span class="label editable" id="f-lbl-qid" contenteditable="true">QID Expiry</span><span class="date-wrap"><span class="date-display editable" id="f-qid-display"></span><input type="date" class="date-overlay-input" id="f-qid"></span></span>
@@ -510,7 +846,7 @@
                     <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-salary" contenteditable="true">Basic Salary</span><span class="field-line medium editable" id="f-salary" contenteditable="true"></span></span></span>
                 </div>
 
-                <div class="field-row">
+                <div class="field-row employee-field-row">
                     <span class="row-left">
                         <span class="field-item"><span class="label editable" id="f-lbl-dept" contenteditable="true">Department</span><span class="field-line medium editable" id="f-dept" contenteditable="true"></span></span>
                         <span class="field-item"><span class="label editable" id="f-lbl-occ" contenteditable="true">Occupation</span><span class="field-line medium editable" id="f-occ" contenteditable="true"></span></span>
@@ -519,7 +855,7 @@
                 </div>
 
                 <!-- Leave Pay & Termination (No commas) -->
-                <div class="field-row single-col leave-options-row">
+                <div class="field-row employee-field-row single-col leave-options-row">
                     <span class="row-left leave-options">
                         <span class="chk-item"><span class="editable" id="f-lbl-annual" contenteditable="true">Annual Leave</span><span class="chk" id="f-chk-annual" data-group="leave-type"></span></span>
                         <span class="chk-item"><span class="editable" id="f-lbl-resignation" contenteditable="true">Resignation</span><span class="chk" id="f-chk-resignation" data-group="leave-type"></span></span>
@@ -529,7 +865,7 @@
                     </span>
                                 </div>
 
-                <div class="field-row">
+                <div class="field-row employee-field-row">
                     <span class="row-left">
                         <span class="field-item"><span class="label editable" id="f-lbl-from" contenteditable="true">From:</span><span class="date-wrap"><span class="date-display editable" id="f-from-display"></span><input type="date" class="date-overlay-input" id="f-from"></span></span>
                         <span class="field-item"><span class="label editable" id="f-lbl-to" contenteditable="true">To</span><span class="date-wrap"><span class="date-display editable" id="f-to-display"></span><input type="date" class="date-overlay-input" id="f-to"></span><span class="editable" id="f-lbl-inclusive" contenteditable="true" style="color:#2F5496 !important;">(dates inclusive)</span></span>
@@ -537,17 +873,17 @@
                     <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-nodays" contenteditable="true">No. of days</span><span class="field-line short editable" id="f-nodays" contenteditable="true"></span></span></span>
                 </div>
 
-                <div class="field-row">
+                <div class="field-row employee-field-row">
                     <span class="row-left"><span class="field-item grow"><span class="label editable" id="f-lbl-homecontact" contenteditable="true">Home country contact no.</span><span class="field-line wide editable" id="f-homecontact" contenteditable="true"></span></span></span>
                     <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-mobqatar" contenteditable="true">Mob. No. (Qatar)</span><span class="field-line medium editable" id="f-mobqatar" contenteditable="true"></span></span></span>
                 </div>
 
-                <div class="field-row">
+                <div class="field-row employee-field-row">
                     <span class="row-left"><span class="field-item"><span class="label editable" id="f-lbl-returned" contenteditable="true">Date returned from last leave</span><span class="date-wrap"><span class="date-display editable" id="f-returned-display"></span><input type="date" class="date-overlay-input" id="f-returned"></span></span></span>
                     <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-formdate" contenteditable="true">Date:</span><span class="date-wrap"><span class="date-display editable" id="f-formdate-display"></span><input type="date" class="date-overlay-input" id="f-formdate"></span></span></span>
                 </div>
 
-                                <div class="field-row" style="align-items:flex-end;">
+                                <div class="field-row employee-field-row" style="align-items:flex-end;">
                     <span class="row-left"><span class="field-item"><span class="label editable" id="f-lbl-empsig" contenteditable="true">Employee's Signature</span><span class="sig-wrap" id="sigWrapEmp" data-sig-id="sig-emp" tabindex="0"><span class="sig-line"><img class="sig-img" id="sigImgEmp"><span class="sig-hint">+ Signature</span></span><button type="button" class="sig-choose-btn">Choose File</button><button type="button" class="sig-remove-btn">Remove</button><input type="file" class="sig-file-input" accept="image/*" id="sigFileEmp"></span></span></span>
                     <span class="row-right"><span class="field-item"><span class="label editable" id="f-lbl-email" contenteditable="true">Email ID:</span><input type="email" inputmode="email" autocomplete="email" class="field-line wide editable" id="f-email" placeholder=""></span></span>
                                 </div>
@@ -563,7 +899,7 @@
                 <hr class="section-divider">
 
                 <!-- ====== HR & A SECTION ====== -->
-                <div class="subsection-title editable" id="f-sec-hr" contenteditable="true">(To be completed by HR &amp; A Department)</div>
+                                <div class="subsection-title editable" id="f-sec-hr" contenteditable="true">(To be completed by HR &amp; A Department)</div>
 
                 <div class="field-row single-col">
                     <span class="row-left"><span class="field-item"><span class="label editable" id="f-lbl-joining" contenteditable="true">Date of Joining:</span><span class="date-wrap"><span class="date-display editable" id="f-joining-display"></span><input type="date" class="date-overlay-input" id="f-joining"></span></span></span>
@@ -803,6 +1139,28 @@
             });
         });
 
+        // Tick image: one real <img> inserted into every checkbox (shown only when .checked).
+        const TICK_IMG_SRC = 'https://i.imgur.com/nNOM16v.png';
+        document.querySelectorAll('.chk[id]').forEach(el => {
+            const img = document.createElement('img');
+            img.className = 'chk-tick-img';
+            img.src = TICK_IMG_SRC;
+            img.crossOrigin = 'anonymous';
+            img.alt = '';
+            img.draggable = false;
+            el.appendChild(img);
+        });
+        // Resolves once the tick image has actually loaded, so Save as PDF never captures a blank/broken image.
+        function preloadTickImage() {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = TICK_IMG_SRC;
+            });
+        }
+
         // Signature widgets
         document.querySelectorAll('.sig-wrap').forEach(wrap => {
             const sigId = wrap.dataset.sigId;
@@ -962,6 +1320,7 @@
             btn.innerHTML = 'Generating...';
             try {
                 try { await document.fonts.ready; } catch (e) {}
+                await preloadTickImage();
                 saveAllFields();
                 resetForOutput();
                 await new Promise(resolve => setTimeout(resolve, 300));
@@ -971,7 +1330,7 @@
                     const a4WidthPx = 794;
                     const a4HeightPx = 1123;
                     // Leave room for the output-only vertical form scaling so the bottom is not clipped on phones.
-                    const a4CaptureHeightPx = 1250;
+                    const a4CaptureHeightPx = window.innerWidth <= 700 ? 1400 : 1250;
                     const canvas = await html2canvas(page, {
                     scale: 4,
                     useCORS: true,
@@ -984,12 +1343,13 @@
                     windowWidth: a4WidthPx,
                     windowHeight: a4CaptureHeightPx,
                     onclone: (clonedDoc) => {
+                        const mobilePdfRules = '.form-box{transform:translateY(4px) scaleY(0.92) !important;transform-origin:top center !important}.date-wrap{width:180px !important;min-width:180px !important;height:23px !important;min-height:23px !important}.date-display{font-size:12.5px !important;line-height:16px !important;min-width:0 !important;color:#000 !important;-webkit-text-fill-color:#000 !important;vertical-align:bottom !important;transform:translateY(3px) !important}';
                         const style = clonedDoc.createElement('style');
                         style.innerHTML = `
                             html, body { background:#fff !important; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
                             #pageWrapper { display:block !important; width:210mm !important; min-width:210mm !important; margin:0 auto !important; padding:0 !important; overflow:visible !important; }
-                            #sheetPage, .page { display:block !important; width:210mm !important; min-width:210mm !important; min-height:297mm !important; margin:0 !important; padding:8mm 6mm !important; zoom:1 !important; transform:none !important; box-sizing:border-box !important; overflow:visible !important; box-shadow:none !important; }
-                            #sheetPage .form-box { width:100% !important; max-width:none !important; box-sizing:border-box !important; margin-top:2mm !important; padding:3mm 5mm !important; transform:translateY(-6px) scaleY(1.08) !important; transform-origin:top center !important; }
+                            #sheetPage, .page { display:block !important; width:210mm !important; min-width:210mm !important; height:1250px !important; max-height:none !important; min-height:297mm !important; margin:0 !important; padding:8mm 6mm !important; zoom:1 !important; transform:none !important; box-sizing:border-box !important; overflow:visible !important; box-shadow:none !important; }
+                            #sheetPage .form-box { width:100% !important; max-width:none !important; box-sizing:border-box !important; margin-top:2mm !important; padding:3mm 5mm !important; transform:translateY(4px) scaleY(1.08) !important; transform-origin:top center !important; }
                             .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input, .sig-hint { display:none !important; }
                             .title-english { font-size:20px !important; line-height:1.3 !important; }
                             .title-sub { font-size:16px !important; margin-top:4px !important; }
@@ -1001,6 +1361,7 @@
                             .field-line.medium { min-width:120px !important; }
                             .field-line.wide { min-width:220px !important; }
                             .date-wrap { font-size:12.5px !important; min-width:100px !important; }
+                            ${mobilePdfRules}
                             .subsection-title { font-size:13px !important; margin:0 0 1.5mm 0 !important; }
                             .note-text { font-size:11px !important; margin:1px 0 2px 0 !important; }
                             .leave-options-row, .leave-options-row .leave-options, .leave-options-row .chk-item { font-size:12.5px !important; line-height:16px !important; }
@@ -1011,8 +1372,11 @@
                             .editable { color:#000 !important; }
                             .form-box .reimb-label, .form-box #f-lbl-reimb { font-weight:700 !important; }
                             .form-box .section-divider, .form-box .leave-signature-divider, .form-box .official-use-divider, .form-box .document-services-divider { display:block !important; height:0 !important; border:0 !important; border-top:1.25px solid #938686 !important; border-bottom:0 !important; box-shadow:none !important; background:transparent !important; margin-top:.5mm !important; margin-bottom:.5mm !important; }
-                            #f-email, input#f-email { background:transparent !important; color:#000 !important; -webkit-text-fill-color:#000 !important; border:0 !important; border-bottom:1px dotted #000 !important; box-shadow:none !important; outline:none !important; }
+                            .field-line.editable, .date-wrap, .remarks-inline-line.editable, .remarks-line.editable, .sig-wrap, #f-email, input#f-email { border:0 !important; border-bottom:1px dashed #000 !important; background-image:none !important; background-color:transparent !important; box-shadow:none !important; outline:none !important; }
+                            #f-email, input#f-email { color:#000 !important; -webkit-text-fill-color:#000 !important; }
                             #f-reimb, .reimb-box.editable { background:#fff !important; color:#000 !important; -webkit-text-fill-color:#000 !important; border:1.5px solid #000 !important; box-shadow:none !important; }
+                            #sheetPage .form-box { height:auto !important; max-height:none !important; overflow:visible !important; }
+                            #sheetPage .dist-block, #sheetPage .dist-block .editable, #sheetPage #f-final-note { display:block !important; visibility:visible !important; opacity:1 !important; height:auto !important; min-height:14px !important; overflow:visible !important; color:#000 !important; white-space:normal !important; line-height:1.25 !important; }
                         `;
                         clonedDoc.head.appendChild(style);
                         clonedDoc.activeElement?.blur();
@@ -1135,8 +1499,6 @@
     .toolbar, .site-footer, .date-overlay-input, .sig-choose-btn, .sig-remove-btn, .sig-file-input { display: none !important; }
 }
 </style>
-</body>
-</html>
 
 <!-- Full-size A4 form fit: preserve readable typography and columns, reduce only vertical gaps. -->
 <style>
@@ -1158,7 +1520,6 @@
 
 <!-- Unified form typography: leave-type labels use the same body text size as every other field row. -->
 <style>
-/* Keep the form typography consistent on screen. */
 .form-box .field-row,
 .form-box .field-row .label,
 .form-box .field-row .chk-item,
@@ -1528,7 +1889,6 @@
     }
 }
 </style>
-</html>
 
 <!-- Final output-only full-page fit: stretch the form vertically to use the A4 sheet. -->
 <style>
@@ -1539,8 +1899,6 @@
     }
 }
 </style>
-
-
 
 <!-- Single stable Menu style for desktop and mobile. -->
 <style>
@@ -1630,3 +1988,59 @@
     }
 }());
 </script>
+
+<!-- Never include the menu in printed or downloaded output. -->
+<style>
+@media print {
+    #toolbarMenu,
+    #toolbarOptions,
+    #btnMenuToggle {
+        display: none !important;
+        visibility: hidden !important;
+    }
+}
+</style>
+
+<!-- Final underline correction: placed last so all editable fields render one row of visible periods. -->
+<style>
+#sheetPage .form-box .field-line.editable,
+#sheetPage .form-box .date-wrap,
+#sheetPage .form-box .remarks-inline-line.editable,
+#sheetPage .form-box .remarks-line.editable,
+#sheetPage .form-box .sig-wrap,
+#sheetPage .form-box #f-email {
+    border: 0 !important;
+    border-bottom: 1px dashed #000 !important;
+    background-image: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+</style>
+<style>
+@media print {
+    #sheetPage .form-box { transform: translateY(-4px) scaleY(1.08) !important; transform-origin: top center !important; }
+}
+</style>
+<style>
+/* Final checkbox spacing correction: consistent gap between every label and box. */
+.form-box .chk-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+.form-box .chk-item .chk {
+    margin-left: 0 !important;
+}
+@media print {
+    .form-box .chk-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+    }
+    .form-box .chk-item .chk {
+        margin-left: 0 !important;
+    }
+}
+</style>
+</body>
+</html>
