@@ -1091,6 +1091,27 @@
             return `${d}/${m}/${y}`;
         }
 
+        function updateLeaveDays() {
+            const from = document.getElementById('f-from');
+            const to = document.getElementById('f-to');
+            const output = document.getElementById('f-nodays');
+            if (!from || !to || !output) return;
+
+            let value = '';
+            if (from.value && to.value) {
+                const [fromYear, fromMonth, fromDay] = from.value.split('-').map(Number);
+                const [toYear, toMonth, toDay] = to.value.split('-').map(Number);
+                const fromDate = Date.UTC(fromYear, fromMonth - 1, fromDay);
+                const toDate = Date.UTC(toYear, toMonth - 1, toDay);
+                const days = (toDate - fromDate) / (24 * 60 * 60 * 1000);
+
+                if (Number.isFinite(days) && days >= 0) value = `${days} DAYS`;
+            }
+
+            output.innerText = value;
+            saveField(output, false);
+        }
+
         function readStore() {
             try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; } catch (e) { console.error('read error', e); return {}; }
         }
@@ -1222,6 +1243,7 @@
                 img.style.display = 'inline-block';
                 wrap.classList.add('has-sig');
             });
+            updateLeaveDays();
         }
 
         document.querySelectorAll('.field-line.editable, .remarks-inline-line.editable, .reimb-box.editable').forEach(el => {
@@ -1233,10 +1255,12 @@
         document.querySelectorAll('.date-overlay-input[id]').forEach(overlay => {
             const display = document.getElementById(overlay.id + '-display');
             if (!display) return;
-            overlay.addEventListener('change', () => {
+                        overlay.addEventListener('change', () => {
                 display.innerText = formatDateDisplay(overlay.value);
                 saveField(overlay);
+                if (overlay.id === 'f-from' || overlay.id === 'f-to') updateLeaveDays();
             });
+
             overlay.addEventListener('click', () => {
                 if (typeof overlay.showPicker === 'function') { try { overlay.showPicker(); } catch (e) {} }
             });
