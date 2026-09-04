@@ -1091,10 +1091,10 @@
             return `${d}/${m}/${y}`;
         }
 
-        function updateLeaveDays() {
-            const from = document.getElementById('f-from');
-            const to = document.getElementById('f-to');
-            const output = document.getElementById('f-nodays');
+        function calculateDateRangeDays(fromId, toId, outputId) {
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            const output = document.getElementById(outputId);
             if (!from || !to || !output) return;
 
             let value = '';
@@ -1110,6 +1110,12 @@
 
             output.innerText = value;
             saveField(output, false);
+        }
+
+        function updateLeaveDays() {
+            calculateDateRangeDays('f-from', 'f-to', 'f-nodays');
+            calculateDateRangeDays('f-lastleave-from', 'f-lastleave-to', 'f-lastleave-days');
+            calculateDateRangeDays('f-earned-from', 'f-earned-to', 'f-earned-days');
         }
 
         function readStore() {
@@ -1258,7 +1264,11 @@
                         overlay.addEventListener('change', () => {
                 display.innerText = formatDateDisplay(overlay.value);
                 saveField(overlay);
-                if (overlay.id === 'f-from' || overlay.id === 'f-to') updateLeaveDays();
+                if (
+                    overlay.id === 'f-from' || overlay.id === 'f-to' ||
+                    overlay.id === 'f-lastleave-from' || overlay.id === 'f-lastleave-to' ||
+                    overlay.id === 'f-earned-from' || overlay.id === 'f-earned-to'
+                ) updateLeaveDays();
             });
 
             overlay.addEventListener('click', () => {
